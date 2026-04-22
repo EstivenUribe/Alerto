@@ -1,0 +1,15 @@
+C:\Users\cipap\Documents\Alerto\src\Alerto.Application\obj\Debug\net8.0\Alerto.Application.csproj.AssemblyReference.cache
+C:\Users\cipap\Documents\Alerto\src\Alerto.Application\obj\Debug\net8.0\Alerto.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\cipap\Documents\Alerto\src\Alerto.Application\obj\Debug\net8.0\Alerto.Application.AssemblyInfoInputs.cache
+C:\Users\cipap\Documents\Alerto\src\Alerto.Application\obj\Debug\net8.0\Alerto.Application.AssemblyInfo.cs
+C:\Users\cipap\Documents\Alerto\src\Alerto.Application\obj\Debug\net8.0\Alerto.Application.csproj.CoreCompileInputs.cache
+C:\Users\cipap\Documents\Alerto\src\Alerto.Application\bin\Debug\net8.0\Alerto.Application.deps.json
+C:\Users\cipap\Documents\Alerto\src\Alerto.Application\bin\Debug\net8.0\Alerto.Application.dll
+C:\Users\cipap\Documents\Alerto\src\Alerto.Application\bin\Debug\net8.0\Alerto.Application.pdb
+C:\Users\cipap\Documents\Alerto\src\Alerto.Application\bin\Debug\net8.0\Alerto.Domain.dll
+C:\Users\cipap\Documents\Alerto\src\Alerto.Application\bin\Debug\net8.0\Alerto.Domain.pdb
+C:\Users\cipap\Documents\Alerto\src\Alerto.Application\obj\Debug\net8.0\Alerto.A.FEBA223A.Up2Date
+C:\Users\cipap\Documents\Alerto\src\Alerto.Application\obj\Debug\net8.0\Alerto.Application.dll
+C:\Users\cipap\Documents\Alerto\src\Alerto.Application\obj\Debug\net8.0\refint\Alerto.Application.dll
+C:\Users\cipap\Documents\Alerto\src\Alerto.Application\obj\Debug\net8.0\Alerto.Application.pdb
+C:\Users\cipap\Documents\Alerto\src\Alerto.Application\obj\Debug\net8.0\ref\Alerto.Application.dll

@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "c6LzQL2YPNPUKSg28Q97vkQkxxjbUSY3Hg+pa83bPm0=",
+  "Source": "Alerto.Api",
+  "BasePath": "_content/Alerto.Api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

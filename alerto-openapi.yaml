@@ -1,0 +1,378 @@
+openapi: 3.0.3
+info:
+  title: Alerto Management API
+  description: >
+    API RESTful para gestión integral de alertas civiles georreferenciadas
+    en Medellín. Backend for Frontend (BFF) para el Tablero COE y el Panel
+    de Administración del sistema Alerto.
+  version: 1.0.0
+  contact:
+    name: Equipo Alerto - Politécnico Colombiano JIC
+    email: alerto@example.com
+
+servers:
+  - url: https://api.alerto.gov.co/api/v1
+    description: Producción
+  - url: https://staging-api.alerto.gov.co/api/v1
+    description: Staging
+  - url: http://localhost:5000/api/v1
+    description: Desarrollo local
+
+security:
+  - BearerAuth: []
+
+tags:
+  - name: Alertas
+    description: Operaciones CRUD y flujos de aprobación de alertas civiles
+  - name: Autenticación
+    description: Login, 2FA y gestión de tokens JWT
+
+paths:
+  # ──────────────────────────────────────────────────────
+  # ENDPOINT 1: Crear alerta
+  # ──────────────────────────────────────────────────────
+  /alerts:
+    post:
+      tags: [Alertas]
+      operationId: crearAlerta
+      summary: Crear una nueva alerta de inundación
+      description: >
+        Crea una pre-alerta en estado `Pendiente`. Puede ser invocado manualmente
+        por un operador o automáticamente por el Rules Engine (M2M). Requiere rol
+        `Operador` o `Administrador`. La alerta queda asociada a una geocerca
+        existente y debe ser aprobada antes de su difusión por Cell Broadcast.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAlertRequest'
+            examples:
+              alerta_manual:
+                summary: Alerta manual de operador
+                value:
+                  identificador_cap: "urn:oid:2.49.0.0.170.0.2026.04.14.001"
+                  severidad: "Warning"
+                  evento: "Inundación río Medellín - sector Barbosa"
+                  geocerca_id: 42
+                  mensaje_es: >
+                    ALERTA: Nivel del río Medellín supera umbral en sector Barbosa.
+                    Evacúe zonas ribereñas inmediatamente.
+                  poblacion_objetivo: 15000
+              alerta_automatica:
+                summary: Pre-alerta del Rules Engine
+                value:
+                  identificador_cap: "urn:oid:2.49.0.0.170.0.2026.04.14.002"
+                  severidad: "Watch"
+                  evento: "Nivel elevado quebrada La Iguaná"
+                  geocerca_id: 17
+                  mensaje_es: >
+                    VIGILANCIA: Quebrada La Iguaná presenta nivel elevado.
+                    Mantenga precaución en zonas aledañas.
+                  poblacion_objetivo: 8500
+      responses:
+        '201':
+          description: Alerta creada exitosamente en estado Pendiente
+          headers:
+            Location:
+              description: URI del recurso creado
+              schema:
+                type: string
+                example: /api/v1/alerts/550e8400-e29b-41d4-a716-446655440000
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertResponse'
+              example:
+                id: "550e8400-e29b-41d4-a716-446655440000"
+                identificador_cap: "urn:oid:2.49.0.0.170.0.2026.04.14.001"
+                severidad: "Warning"
+                evento: "Inundación río Medellín - sector Barbosa"
+                geocerca_id: 42
+                geocerca_nombre: "Zona Ribereña Barbosa"
+                mensaje_es: "ALERTA: Nivel del río Medellín supera umbral..."
+                estado: "Pendiente"
+                confianza_score: 85
+                operador_usuario_id: null
+                timestamp_generacion: "2026-04-14T10:30:00Z"
+                timestamp_difusion: null
+                poblacion_objetivo: 15000
+                poblacion_alcanzada: 0
+        '400':
+          description: Datos de entrada inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: "https://api.alerto.gov.co/errors/validation"
+                title: "Error de validación"
+                status: 400
+                detail: "Uno o más campos no cumplen las reglas de validación"
+                errors:
+                  geocerca_id: ["La geocerca especificada no existe o está inactiva"]
+                  severidad: ["Valor no permitido. Use: Advisory, Watch, Warning, Emergency"]
+        '401':
+          description: Token JWT ausente o inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Rol insuficiente (requiere Operador o Administrador)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+
+  # ──────────────────────────────────────────────────────
+  # ENDPOINT 2: Aprobar alerta para difusión
+  # ──────────────────────────────────────────────────────
+  /alerts/{id}/approve:
+    post:
+      tags: [Alertas]
+      operationId: aprobarAlerta
+      summary: Aprobar una alerta pendiente para difusión por Cell Broadcast
+      description: >
+        Cambia el estado de la alerta de `Pendiente` a `Aprobada`, registra el
+        operador que aprobó, genera el mensaje CAP v1.2 y dispara el flujo de
+        difusión a través del Cell Broadcast Dispatcher. Incluye validaciones
+        de negocio: timeout de 3 minutos desde la creación, verificación de
+        geocerca activa, y registro completo de auditoría. Solo alertas en
+        estado `Pendiente` pueden ser aprobadas.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: UUID de la alerta a aprobar
+          schema:
+            type: string
+            format: uuid
+          example: "550e8400-e29b-41d4-a716-446655440000"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApproveAlertRequest'
+            examples:
+              aprobacion_simple:
+                summary: Aprobación sin comentarios
+                value:
+                  comentario: null
+              aprobacion_con_nota:
+                summary: Aprobación con nota del operador
+                value:
+                  comentario: "Confirmado con estación SIATA Barbosa. Nivel crítico."
+      responses:
+        '200':
+          description: Alerta aprobada y difusión iniciada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApproveAlertResponse'
+              example:
+                id: "550e8400-e29b-41d4-a716-446655440000"
+                estado: "Aprobada"
+                operador_usuario_id: 15
+                operador_nombre: "Carlos Pérez"
+                timestamp_aprobacion: "2026-04-14T10:31:45Z"
+                tiempo_respuesta_segundos: 105
+                difusion:
+                  estado: "Iniciada"
+                  cap_message_id: "urn:oid:2.49.0.0.170.0.2026.04.14.001"
+                  canales: ["cell_broadcast"]
+                  poblacion_objetivo: 15000
+        '404':
+          description: Alerta no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '409':
+          description: >
+            Conflicto de estado — la alerta no está en estado Pendiente
+            o ya fue procesada por otro operador
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: "https://api.alerto.gov.co/errors/conflict"
+                title: "Conflicto de estado"
+                status: 409
+                detail: "La alerta ya fue aprobada por otro operador"
+                alertId: "550e8400-e29b-41d4-a716-446655440000"
+                estadoActual: "Aprobada"
+        '422':
+          description: >
+            Regla de negocio violada (timeout excedido, geocerca inactiva)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: "https://api.alerto.gov.co/errors/business-rule"
+                title: "Regla de negocio violada"
+                status: 422
+                detail: "Tiempo de aprobación excedido (>3 min). Alerta debe ser re-evaluada."
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: >
+        Token JWT obtenido mediante el flujo de autenticación con 2FA.
+        Claims incluidos: sub (user_id), role, email, exp (15 min).
+
+  schemas:
+    # ── Request Schemas ──
+    CreateAlertRequest:
+      type: object
+      required:
+        - identificador_cap
+        - severidad
+        - evento
+        - geocerca_id
+        - mensaje_es
+        - poblacion_objetivo
+      properties:
+        identificador_cap:
+          type: string
+          description: Identificador único CAP v1.2
+          example: "urn:oid:2.49.0.0.170.0.2026.04.14.001"
+          pattern: "^urn:oid:[\\d.]+$"
+        severidad:
+          type: string
+          enum: [Advisory, Watch, Warning, Emergency]
+          description: Nivel de severidad según estándar CAP
+        evento:
+          type: string
+          description: Descripción corta del evento de emergencia
+          maxLength: 255
+          minLength: 10
+        geocerca_id:
+          type: integer
+          description: ID de la geocerca asociada (debe estar activa)
+          minimum: 1
+        mensaje_es:
+          type: string
+          description: Mensaje de alerta en español para difusión
+          maxLength: 1000
+          minLength: 20
+        poblacion_objetivo:
+          type: integer
+          description: Población estimada en la zona de impacto
+          minimum: 1
+
+    ApproveAlertRequest:
+      type: object
+      properties:
+        comentario:
+          type: string
+          description: Nota opcional del operador sobre la aprobación
+          maxLength: 500
+          nullable: true
+
+    # ── Response Schemas ──
+    AlertResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        identificador_cap:
+          type: string
+        severidad:
+          type: string
+          enum: [Advisory, Watch, Warning, Emergency]
+        evento:
+          type: string
+        geocerca_id:
+          type: integer
+        geocerca_nombre:
+          type: string
+        mensaje_es:
+          type: string
+        estado:
+          type: string
+          enum: [Pendiente, Aprobada, Rechazada, Difundida, Cancelada]
+        confianza_score:
+          type: integer
+          minimum: 0
+          maximum: 100
+          description: Score de confianza generado por el Rules Engine
+        operador_usuario_id:
+          type: integer
+          nullable: true
+        timestamp_generacion:
+          type: string
+          format: date-time
+        timestamp_difusion:
+          type: string
+          format: date-time
+          nullable: true
+        poblacion_objetivo:
+          type: integer
+        poblacion_alcanzada:
+          type: integer
+
+    ApproveAlertResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        estado:
+          type: string
+          example: "Aprobada"
+        operador_usuario_id:
+          type: integer
+        operador_nombre:
+          type: string
+        timestamp_aprobacion:
+          type: string
+          format: date-time
+        tiempo_respuesta_segundos:
+          type: integer
+          description: Segundos entre creación y aprobación
+        difusion:
+          type: object
+          properties:
+            estado:
+              type: string
+              enum: [Iniciada, Error]
+            cap_message_id:
+              type: string
+            canales:
+              type: array
+              items:
+                type: string
+            poblacion_objetivo:
+              type: integer
+
+    ProblemDetails:
+      type: object
+      description: RFC 7807 Problem Details
+      properties:
+        type:
+          type: string
+          format: uri
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string

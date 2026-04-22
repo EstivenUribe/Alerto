@@ -1,0 +1,439 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\cipap\\Documents\\Alerto\\tests\\Alerto.ArchitectureTests\\Alerto.ArchitectureTests.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Api\\Alerto.Api.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Api\\Alerto.Api.csproj",
+        "projectName": "Alerto.Api",
+        "projectPath": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Api\\Alerto.Api.csproj",
+        "packagesPath": "C:\\Users\\cipap\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Api\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\cipap\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Application\\Alerto.Application.csproj": {
+                "projectPath": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Application\\Alerto.Application.csproj"
+              },
+              "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Infrastructure\\Alerto.Infrastructure.csproj": {
+                "projectPath": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Infrastructure\\Alerto.Infrastructure.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Asp.Versioning.Mvc": {
+              "target": "Package",
+              "version": "[8.1.0, )"
+            },
+            "Asp.Versioning.Mvc.ApiExplorer": {
+              "target": "Package",
+              "version": "[8.1.0, )"
+            },
+            "FluentValidation.AspNetCore": {
+              "target": "Package",
+              "version": "[11.3.1, )"
+            },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[8.0.12, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.11, )"
+            },
+            "Serilog.AspNetCore": {
+              "target": "Package",
+              "version": "[8.0.3, )"
+            },
+            "Serilog.Formatting.Compact": {
+              "target": "Package",
+              "version": "[2.0.0, )"
+            },
+            "Serilog.Sinks.Console": {
+              "target": "Package",
+              "version": "[5.0.1, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[6.6.2, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.417/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Application\\Alerto.Application.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Application\\Alerto.Application.csproj",
+        "projectName": "Alerto.Application",
+        "projectPath": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Application\\Alerto.Application.csproj",
+        "packagesPath": "C:\\Users\\cipap\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Application\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\cipap\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Domain\\Alerto.Domain.csproj": {
+                "projectPath": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Domain\\Alerto.Domain.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "AutoMapper.Extensions.Microsoft.DependencyInjection": {
+              "target": "Package",
+              "version": "[12.0.1, )"
+            },
+            "FluentValidation.DependencyInjectionExtensions": {
+              "target": "Package",
+              "version": "[11.9.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.417/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Domain\\Alerto.Domain.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Domain\\Alerto.Domain.csproj",
+        "projectName": "Alerto.Domain",
+        "projectPath": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Domain\\Alerto.Domain.csproj",
+        "packagesPath": "C:\\Users\\cipap\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Domain\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\cipap\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.417/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Infrastructure\\Alerto.Infrastructure.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Infrastructure\\Alerto.Infrastructure.csproj",
+        "projectName": "Alerto.Infrastructure",
+        "projectPath": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Infrastructure\\Alerto.Infrastructure.csproj",
+        "packagesPath": "C:\\Users\\cipap\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Infrastructure\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\cipap\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Application\\Alerto.Application.csproj": {
+                "projectPath": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Application\\Alerto.Application.csproj"
+              },
+              "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Domain\\Alerto.Domain.csproj": {
+                "projectPath": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Domain\\Alerto.Domain.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.11, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.11, )"
+            },
+            "Npgsql.EntityFrameworkCore.PostgreSQL": {
+              "target": "Package",
+              "version": "[8.0.11, )"
+            },
+            "Otp.NET": {
+              "target": "Package",
+              "version": "[1.4.0, )"
+            },
+            "Polly": {
+              "target": "Package",
+              "version": "[7.2.4, )"
+            },
+            "StackExchange.Redis": {
+              "target": "Package",
+              "version": "[2.8.24, )"
+            },
+            "System.IdentityModel.Tokens.Jwt": {
+              "target": "Package",
+              "version": "[8.2.1, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.417/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\cipap\\Documents\\Alerto\\tests\\Alerto.ArchitectureTests\\Alerto.ArchitectureTests.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\cipap\\Documents\\Alerto\\tests\\Alerto.ArchitectureTests\\Alerto.ArchitectureTests.csproj",
+        "projectName": "Alerto.ArchitectureTests",
+        "projectPath": "C:\\Users\\cipap\\Documents\\Alerto\\tests\\Alerto.ArchitectureTests\\Alerto.ArchitectureTests.csproj",
+        "packagesPath": "C:\\Users\\cipap\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\cipap\\Documents\\Alerto\\tests\\Alerto.ArchitectureTests\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\cipap\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Api\\Alerto.Api.csproj": {
+                "projectPath": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Api\\Alerto.Api.csproj"
+              },
+              "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Application\\Alerto.Application.csproj": {
+                "projectPath": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Application\\Alerto.Application.csproj"
+              },
+              "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Domain\\Alerto.Domain.csproj": {
+                "projectPath": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Domain\\Alerto.Domain.csproj"
+              },
+              "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Infrastructure\\Alerto.Infrastructure.csproj": {
+                "projectPath": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Infrastructure\\Alerto.Infrastructure.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "FluentAssertions": {
+              "target": "Package",
+              "version": "[6.12.1, )"
+            },
+            "Microsoft.NET.Test.Sdk": {
+              "target": "Package",
+              "version": "[17.8.0, )"
+            },
+            "coverlet.collector": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            },
+            "xunit": {
+              "target": "Package",
+              "version": "[2.5.3, )"
+            },
+            "xunit.runner.visualstudio": {
+              "target": "Package",
+              "version": "[2.5.3, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.417/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

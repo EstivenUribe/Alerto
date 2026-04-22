@@ -1,0 +1,11 @@
+C:\Users\cipap\Documents\Alerto\src\Alerto.Domain\obj\Release\net8.0\Alerto.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\cipap\Documents\Alerto\src\Alerto.Domain\bin\Release\net8.0\Alerto.Domain.deps.json
+C:\Users\cipap\Documents\Alerto\src\Alerto.Domain\bin\Release\net8.0\Alerto.Domain.dll
+C:\Users\cipap\Documents\Alerto\src\Alerto.Domain\bin\Release\net8.0\Alerto.Domain.pdb
+C:\Users\cipap\Documents\Alerto\src\Alerto.Domain\obj\Release\net8.0\Alerto.Domain.AssemblyInfoInputs.cache
+C:\Users\cipap\Documents\Alerto\src\Alerto.Domain\obj\Release\net8.0\Alerto.Domain.AssemblyInfo.cs
+C:\Users\cipap\Documents\Alerto\src\Alerto.Domain\obj\Release\net8.0\Alerto.Domain.csproj.CoreCompileInputs.cache
+C:\Users\cipap\Documents\Alerto\src\Alerto.Domain\obj\Release\net8.0\Alerto.Domain.dll
+C:\Users\cipap\Documents\Alerto\src\Alerto.Domain\obj\Release\net8.0\refint\Alerto.Domain.dll
+C:\Users\cipap\Documents\Alerto\src\Alerto.Domain\obj\Release\net8.0\Alerto.Domain.pdb
+C:\Users\cipap\Documents\Alerto\src\Alerto.Domain\obj\Release\net8.0\ref\Alerto.Domain.dll

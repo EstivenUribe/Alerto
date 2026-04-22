@@ -1,0 +1,172 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Alerto.Api</name>
+    </assembly>
+    <members>
+        <member name="M:Alerto.Api.Controllers.ObservabilityController.GetMetrics">
+            <summary>
+            Devuelve una instantanea de metricas basicas de la API para soporte operativo y evaluacion tecnica.
+            </summary>
+        </member>
+        <member name="M:Alerto.Api.Controllers.V1.AlertsController.Search(Alerto.Application.Alerts.AlertQueryRequest,System.Threading.CancellationToken)">
+            <summary>
+            Lista alertas con filtros por estado, geocerca, severidad y rango de fecha, con paginación.
+            </summary>
+            <param name="request">Filtros opcionales de búsqueda y parámetros de paginación.</param>
+            <param name="cancellationToken">Token de cancelación.</param>
+            <returns>Resultado paginado de alertas.</returns>
+        </member>
+        <member name="M:Alerto.Api.Controllers.V1.AlertsController.GetById(System.Guid,System.Threading.CancellationToken)">
+            <summary>
+            Consulta una alerta por su identificador.
+            </summary>
+            <remarks>
+            Recomendado para refresco puntual del tablero COE cuando el frontend ya conoce el identificador de la alerta.
+            </remarks>
+        </member>
+        <member name="M:Alerto.Api.Controllers.V1.AlertsController.Create(Alerto.Application.Alerts.CreateAlertRequest,System.Threading.CancellationToken)">
+            <summary>
+            Crea una nueva alerta en estado Pending.
+            </summary>
+            <remarks>
+            Operacion pensada para operadores del COE o integraciones internas que generan alertas iniciales antes de aprobacion manual.
+            </remarks>
+        </member>
+        <member name="M:Alerto.Api.Controllers.V1.AlertsController.Update(System.Guid,Alerto.Application.Alerts.UpdateAlertRequest,System.Threading.CancellationToken)">
+            <summary>
+            Actualiza una alerta mientras permanezca en estado Pending.
+            </summary>
+            <remarks>
+            Requiere <c>expectedVersion</c> para control de concurrencia optimista y evitar sobrescrituras accidentales.
+            </remarks>
+        </member>
+        <member name="M:Alerto.Api.Controllers.V1.AlertsController.Approve(System.Guid,Alerto.Application.Alerts.ApproveAlertRequest,System.Threading.CancellationToken)">
+            <summary>
+            Aprueba manualmente una alerta Pending dentro de la ventana de 3 minutos.
+            </summary>
+            <remarks>
+            Si la alerta ya fue aprobada, cambiada o vencio su ventana de aprobacion, la API devuelve conflicto o violacion de regla de negocio.
+            </remarks>
+        </member>
+        <member name="M:Alerto.Api.Controllers.V1.AlertsController.Reject(System.Guid,Alerto.Application.Alerts.RejectAlertRequest,System.Threading.CancellationToken)">
+            <summary>
+            Rechaza manualmente una alerta Pending.
+            </summary>
+            <remarks>
+            El motivo de rechazo es obligatorio y queda registrado en auditoria para trazabilidad operativa.
+            </remarks>
+        </member>
+        <member name="M:Alerto.Api.Controllers.V1.AlertsController.Cancel(System.Guid,Alerto.Application.Alerts.CancelAlertRequest,System.Threading.CancellationToken)">
+            <summary>
+            Cancela una alerta y deja auditoría obligatoria de la acción.
+            </summary>
+            <remarks>
+            La cancelacion no elimina la alerta; conserva el historial y evita nuevas transiciones incompatibles.
+            </remarks>
+        </member>
+        <member name="M:Alerto.Api.Controllers.V1.AlertsController.Dispatch(System.Guid,Alerto.Application.Alerts.DispatchAlertRequest,System.Threading.CancellationToken)">
+            <summary>
+            Registra la difusion de una alerta aprobada o previamente broadcasted.
+            </summary>
+            <remarks>
+            Este endpoint representa la salida hacia canales de notificacion o integraciones de difusion masiva.
+            </remarks>
+        </member>
+        <member name="M:Alerto.Api.Controllers.V1.AuthController.Login(Alerto.Application.Auth.LoginRequest,System.Threading.CancellationToken)">
+            <summary>
+            Autentica un usuario y devuelve una sesion JWT o un ticket temporal para 2FA.
+            </summary>
+        </member>
+        <member name="M:Alerto.Api.Controllers.V1.AuthController.VerifyTwoFactor(Alerto.Application.Auth.VerifyTwoFactorRequest,System.Threading.CancellationToken)">
+            <summary>
+            Verifica el codigo TOTP y completa la emision de la sesion del usuario.
+            </summary>
+        </member>
+        <member name="M:Alerto.Api.Controllers.V1.AuthController.Refresh(Alerto.Application.Auth.RefreshTokenRequest,System.Threading.CancellationToken)">
+            <summary>
+            Rota el refresh token vigente y devuelve una nueva sesion JWT.
+            </summary>
+        </member>
+        <member name="M:Alerto.Api.Controllers.V1.AuthController.Logout(Alerto.Application.Auth.LogoutRequest,System.Threading.CancellationToken)">
+            <summary>
+            Revoca el refresh token indicado y cierra la sesion del usuario autenticado.
+            </summary>
+        </member>
+        <member name="M:Alerto.Api.Controllers.V1.AuthController.M2mToken(Alerto.Application.Auth.M2MTokenRequest,System.Threading.CancellationToken)">
+            <summary>
+            Emite un token JWT para integracion maquina a maquina.
+            </summary>
+        </member>
+        <member name="M:Alerto.Api.Controllers.V1.AuthController.SetupTwoFactor(System.Threading.CancellationToken)">
+            <summary>
+            Provisiona el secreto TOTP y retorna el URI de enrolamiento para apps autenticadoras.
+            </summary>
+        </member>
+        <member name="M:Alerto.Api.Controllers.V1.AuthController.EnableTwoFactor(Alerto.Application.Auth.EnableTwoFactorRequest,System.Threading.CancellationToken)">
+            <summary>
+            Habilita definitivamente el segundo factor tras validar un codigo TOTP vigente.
+            </summary>
+        </member>
+        <member name="M:Alerto.Api.Controllers.V1.GeofencesController.Search(Alerto.Application.Geofences.GeofenceQueryRequest,System.Threading.CancellationToken)">
+            <summary>
+            Lista geocercas con filtros de operacion para poblar el tablero y el panel administrativo.
+            </summary>
+        </member>
+        <member name="M:Alerto.Api.Controllers.V1.GeofencesController.GetById(System.Guid,System.Threading.CancellationToken)">
+            <summary>
+            Obtiene el detalle completo de una geocerca para administracion y trazabilidad operativa.
+            </summary>
+        </member>
+        <member name="M:Alerto.Api.Controllers.V1.GeofencesController.Create(Alerto.Application.Geofences.CreateGeofenceRequest,System.Threading.CancellationToken)">
+            <summary>
+            Crea una nueva geocerca administrable por el panel para clasificar alertas por zona.
+            </summary>
+        </member>
+        <member name="M:Alerto.Api.Controllers.V1.GeofencesController.Update(System.Guid,Alerto.Application.Geofences.UpdateGeofenceRequest,System.Threading.CancellationToken)">
+            <summary>
+            Actualiza nombre operativo, poligono y barrio de referencia de una geocerca existente.
+            </summary>
+        </member>
+        <member name="M:Alerto.Api.Controllers.V1.GeofencesController.Activate(System.Guid,Alerto.Application.Geofences.ChangeGeofenceStatusRequest,System.Threading.CancellationToken)">
+            <summary>
+            Reactiva una geocerca para que vuelva a estar disponible en la operacion del tablero.
+            </summary>
+        </member>
+        <member name="M:Alerto.Api.Controllers.V1.GeofencesController.Deactivate(System.Guid,Alerto.Application.Geofences.ChangeGeofenceStatusRequest,System.Threading.CancellationToken)">
+            <summary>
+            Inactiva una geocerca sin borrarla para preservar trazabilidad y evitar nuevas asignaciones.
+            </summary>
+        </member>
+        <member name="M:Alerto.Api.Controllers.V1.UsersController.Search(Alerto.Application.Users.UserQueryRequest,System.Threading.CancellationToken)">
+            <summary>
+            Lista usuarios operativos para el panel administrativo con filtros por rol, estado y busqueda textual.
+            </summary>
+        </member>
+        <member name="M:Alerto.Api.Controllers.V1.UsersController.GetById(System.Guid,System.Threading.CancellationToken)">
+            <summary>
+            Obtiene el detalle de un usuario para administracion de acceso y trazabilidad.
+            </summary>
+        </member>
+        <member name="M:Alerto.Api.Controllers.V1.UsersController.Create(Alerto.Application.Users.CreateUserRequest,System.Threading.CancellationToken)">
+            <summary>
+            Crea un usuario operativo para el COE o para el panel administrativo.
+            </summary>
+        </member>
+        <member name="M:Alerto.Api.Controllers.V1.UsersController.Update(System.Guid,Alerto.Application.Users.UpdateUserRequest,System.Threading.CancellationToken)">
+            <summary>
+            Actualiza perfil funcional y rol de un usuario sin mezclarlo con activacion o baja operativa.
+            </summary>
+        </member>
+        <member name="M:Alerto.Api.Controllers.V1.UsersController.Activate(System.Guid,Alerto.Application.Users.ChangeUserStatusRequest,System.Threading.CancellationToken)">
+            <summary>
+            Reactiva un usuario sin perder su historial de auditoria ni configuracion previa.
+            </summary>
+        </member>
+        <member name="M:Alerto.Api.Controllers.V1.UsersController.Deactivate(System.Guid,Alerto.Application.Users.ChangeUserStatusRequest,System.Threading.CancellationToken)">
+            <summary>
+            Inactiva un usuario para retirar acceso operacional sin borrado fisico del registro.
+            </summary>
+        </member>
+    </members>
+</doc>
