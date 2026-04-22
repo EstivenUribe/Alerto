@@ -56,3 +56,4 @@ C:\Users\cipap\Documents\Alerto\obj\Debug\net8.0\refint\Alerto.dll
 C:\Users\cipap\Documents\Alerto\obj\Debug\net8.0\Alerto.pdb
 C:\Users\cipap\Documents\Alerto\obj\Debug\net8.0\Alerto.genruntimeconfig.cache
 C:\Users\cipap\Documents\Alerto\obj\Debug\net8.0\ref\Alerto.dll
+C:\Users\cipap\Documents\Alerto\obj\Debug\net8.0\Alerto.sourcelink.json

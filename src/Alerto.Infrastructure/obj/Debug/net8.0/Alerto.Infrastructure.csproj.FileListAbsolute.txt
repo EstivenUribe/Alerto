@@ -17,3 +17,4 @@ C:\Users\cipap\Documents\Alerto\src\Alerto.Infrastructure\obj\Debug\net8.0\refin
 C:\Users\cipap\Documents\Alerto\src\Alerto.Infrastructure\obj\Debug\net8.0\Alerto.Infrastructure.pdb
 C:\Users\cipap\Documents\Alerto\src\Alerto.Infrastructure\obj\Debug\net8.0\Alerto.Infrastructure.genruntimeconfig.cache
 C:\Users\cipap\Documents\Alerto\src\Alerto.Infrastructure\obj\Debug\net8.0\ref\Alerto.Infrastructure.dll
+C:\Users\cipap\Documents\Alerto\src\Alerto.Infrastructure\obj\Debug\net8.0\Alerto.Infrastructure.sourcelink.json

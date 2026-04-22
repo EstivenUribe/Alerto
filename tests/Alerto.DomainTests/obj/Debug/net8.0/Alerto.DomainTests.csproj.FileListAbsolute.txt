@@ -104,3 +104,4 @@ C:\Users\cipap\Documents\Alerto\tests\Alerto.DomainTests\obj\Debug\net8.0\refint
 C:\Users\cipap\Documents\Alerto\tests\Alerto.DomainTests\obj\Debug\net8.0\Alerto.DomainTests.pdb
 C:\Users\cipap\Documents\Alerto\tests\Alerto.DomainTests\obj\Debug\net8.0\Alerto.DomainTests.genruntimeconfig.cache
 C:\Users\cipap\Documents\Alerto\tests\Alerto.DomainTests\obj\Debug\net8.0\ref\Alerto.DomainTests.dll
+C:\Users\cipap\Documents\Alerto\tests\Alerto.DomainTests\obj\Debug\net8.0\Alerto.DomainTests.sourcelink.json
