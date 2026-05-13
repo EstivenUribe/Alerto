@@ -4,6 +4,7 @@ using Alerto.Infrastructure.Caching;
 using Alerto.Infrastructure.HealthChecks;
 using Alerto.Infrastructure.Integrations.Cap;
 using Alerto.Infrastructure.Integrations.Dispatch;
+using Alerto.Infrastructure.Integrations.OpenMeteo;
 using Alerto.Infrastructure.Integrations.Options;
 using Alerto.Infrastructure.Integrations.Publishing;
 using Alerto.Infrastructure.Integrations.Siata;
@@ -29,6 +30,7 @@ public static class DependencyInjection
         services.Configure<CellBroadcastOptions>(configuration.GetSection(CellBroadcastOptions.SectionName));
         services.Configure<NotificationPublisherOptions>(configuration.GetSection(NotificationPublisherOptions.SectionName));
         services.Configure<OutboxOptions>(configuration.GetSection(OutboxOptions.SectionName));
+        services.Configure<OpenMeteoOptions>(configuration.GetSection(OpenMeteoOptions.SectionName));
 
         services.AddDbContext<AlertoDbContext>(options =>
         {
@@ -42,7 +44,11 @@ public static class DependencyInjection
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IGeofenceRepository, GeofenceRepository>();
         services.AddScoped<IAuditTrailRepository, AuditTrailRepository>();
+        services.AddScoped<IWeatherRepository, WeatherRepository>();
+        services.AddScoped<IAlertCitizenConfirmationRepository, AlertCitizenConfirmationRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+        services.AddSingleton<IWeatherThresholdStore, WeatherThresholdStore>();
 
         services.AddScoped<IClock, SystemClock>();
         services.AddScoped<IPasswordHasher, PasswordHasherAdapter>();
@@ -54,6 +60,13 @@ public static class DependencyInjection
         services.AddScoped<INotificationPublisher, NotificationPublisher>();
         services.AddScoped<IOutboxMessageDispatcher, LoggingOutboxMessageDispatcher>();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
+
+        services.AddHttpClient<IOpenMeteoClient, OpenMeteoClient>((serviceProvider, client) =>
+        {
+            var options = serviceProvider.GetRequiredService<Microsoft.Extensions.Options.IOptions<OpenMeteoOptions>>().Value;
+            client.BaseAddress = new Uri(options.BaseUrl);
+            client.Timeout = TimeSpan.FromSeconds(options.TimeoutSeconds);
+        });
 
         services.AddHttpClient<ISiataIntegrationClient, SiataIntegrationClient>((serviceProvider, client) =>
         {

@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Alerto | Panel operativo</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+<!-- ══════════════════════════════════════ LOGIN SCREEN ══════════════════════ -->
+<div id="loginScreen" class="login-screen">
+  <div class="login-card">
+    <img class="login-logo" src="/assets/alerto-logo.png" alt="Alerto">
+    <p class="login-eyebrow">Sistema de alertamiento civil</p>
+    <h1 class="login-title">Bienvenido</h1>
+
+    <form id="loginForm" class="login-form">
+      <label>
+        Usuario
+        <input id="username" name="username" autocomplete="username" required placeholder="usuario">
+      </label>
+      <label>
+        Contraseña
+        <input id="password" name="password" type="password" autocomplete="current-password" required placeholder="••••••••">
+      </label>
+      <button class="primary-button" type="submit">Ingresar al sistema</button>
+    </form>
+
+    <div class="demo-separator"><span>Acceso rápido — demo</span></div>
+    <div class="demo-buttons">
+      <button class="demo-btn demo-admin" data-demo="admin">🛡️ Admin</button>
+      <button class="demo-btn demo-operator" data-demo="operador">⚙️ Operador</button>
+      <button class="demo-btn demo-citizen" data-demo="ciudadano">👤 Ciudadano</button>
+    </div>
+
+    <p class="login-hint">Admin gestiona usuarios y geocercas · Operador aprueba reportes · Ciudadano reporta y ve alertas</p>
+
+    <footer class="login-footer">
+      <img src="/assets/facultad-ingenieria.png" alt="Facultad de Ingenieria - Politecnico Colombiano Jaime Isaza Cadavid">
+      <span>Docente: Andr&eacute;s Felipe Gonz&aacute;lez Orozco</span>
+      <span>Federico Bayer Cuartas &middot; Rafael Estiven Uribe &Aacute;lvarez</span>
+      <a href="https://github.com/EstivenUribe/Alerto" target="_blank" rel="noreferrer">GitHub</a>
+    </footer>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ APP SHELL ═════════════════════════ -->
+<div id="appShell" class="app-shell" style="display:none">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <a class="sidebar-logo-link" href="/" aria-label="Alerto">
+        <img src="/assets/alerto-logo.png" alt="Alerto" class="sidebar-logo">
+      </a>
+    </div>
+    <div class="sidebar-user-info">
+      <div class="sidebar-avatar" id="sidebarAvatar">?</div>
+      <div class="sidebar-user-details">
+        <div class="sidebar-username" id="sidebarUsername">—</div>
+        <div class="sidebar-role" id="sidebarRole">—</div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <ul id="sidebarNavList"></ul>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="sidebar-logout-btn" id="logoutButton">↩ Cerrar sesión</button>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <div class="app-main">
+
+    <!-- ─── Alertas (Admin + Operator) ─── -->
+    <section id="panel-alerts" class="panel-section" style="display:none">
+      <div class="panel-header">
+        <div><p class="eyebrow">Gestión</p><h2>Alertas registradas</h2></div>
+        <div class="panel-tools">
+          <select id="alertStatusFilter">
+            <option value="">Todos los estados</option>
+            <option value="Pending">Pendiente</option>
+            <option value="Approved">Aprobada</option>
+            <option value="Rejected">Rechazada</option>
+            <option value="Broadcasted">Difundida</option>
+            <option value="Cancelled">Cancelada</option>
+          </select>
+          <button class="secondary-button" id="refreshAlertsBtn">Actualizar</button>
+        </div>
+      </div>
+      <div class="table-shell">
+        <table>
+          <thead>
+            <tr>
+              <th>Título</th><th>Severidad</th><th>Estado</th>
+              <th>Geocerca</th><th>Creación</th><th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="alertsTableBody"></tbody>
+        </table>
+      </div>
+      <div id="alertDetailBox" class="alert-detail-box" style="display:none">
+        <div class="alert-detail-header">
+          <h3 id="alertDetailTitle">Detalle de alerta</h3>
+          <button class="ghost-button" id="alertDetailClose">✕</button>
+        </div>
+        <pre id="alertDetailPre">{}</pre>
+        <div id="confirmationsSection" style="display:none;padding:16px">
+          <h4 style="margin:0 0 10px;color:var(--navy)">Confirmaciones ciudadanas</h4>
+          <div id="confirmationsList" class="confirmations-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Nueva Alerta (Admin + Operator) ─── -->
+    <section id="panel-newAlert" class="panel-section" style="display:none">
+      <div class="panel-header">
+        <div><p class="eyebrow">Registro</p><h2>Nueva alerta</h2></div>
+      </div>
+      <div class="two-col-grid">
+        <div class="card card-padded">
+          <form id="alertForm" class="form-grid">
+            <label class="wide">Título <input id="alertTitle" required maxlength="160" placeholder="Ej: Creciente súbita río Medellín"></label>
+            <label class="wide">Descripción <textarea id="alertDescription" rows="3" required maxlength="2000" placeholder="Describe la situación de riesgo..."></textarea></label>
+            <label>Severidad
+              <select id="alertSeverity" required>
+                <option value="Moderate">Moderado</option>
+                <option value="Severe">Severo</option>
+                <option value="Critical" selected>Crítico</option>
+              </select>
+            </label>
+            <label>Geocerca <select id="geofenceSelect" required></select></label>
+            <label>Latitud <input id="alertLatitude" type="number" step="0.000001" value="6.230145" required></label>
+            <label>Longitud <input id="alertLongitude" type="number" step="0.000001" value="-75.573921" required></label>
+            <label class="wide">Dirección <input id="alertAddress" required maxlength="200" placeholder="Av. Regional con Calle 30"></label>
+            <button class="primary-button wide" type="submit">Crear alerta</button>
+          </form>
+        </div>
+        <div class="card card-padded">
+          <div class="card-header-inline">
+            <div><p class="eyebrow">Open-Meteo</p><h3 style="margin:0">Condición meteorológica</h3></div>
+            <div style="display:flex;gap:8px">
+              <button class="ghost-button" id="geolocateOpBtn" title="Usar mi ubicación">🌐</button>
+              <button class="secondary-button" id="weatherOpBtn">Consultar</button>
+            </div>
+          </div>
+          <div class="coordinate-row" style="padding:14px 0">
+            <label>Lat <input id="weatherOpLat" type="number" step="0.000001" value="6.244203"></label>
+            <label>Lon <input id="weatherOpLon" type="number" step="0.000001" value="-75.581211"></label>
+          </div>
+          <div class="weather-summary" id="weatherSummaryOp"><strong>Sin lectura</strong><span>Consulta el estado actual.</span></div>
+          <div id="weatherMapOp" class="weather-map"></div>
+          <div class="forecast-list" id="forecastListOp"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Usuarios (Admin) ─── -->
+    <section id="panel-users" class="panel-section" style="display:none">
+      <div class="panel-header">
+        <div><p class="eyebrow">Administración</p><h2>Usuarios del sistema</h2></div>
+        <button class="primary-button" id="showCreateUserBtn">+ Nuevo usuario</button>
+      </div>
+      <div id="createUserForm" class="card card-padded" style="display:none;margin-bottom:20px">
+        <div class="card-header-inline" style="margin-bottom:16px">
+          <h3 style="margin:0">Crear usuario</h3>
+          <button class="ghost-button" id="cancelCreateUserBtn">✕</button>
+        </div>
+        <div class="form-grid" style="grid-template-columns:repeat(3,1fr)">
+          <label>Usuario <input id="newUsername" placeholder="usuario.demo" required></label>
+          <label>Nombre completo <input id="newDisplayName" placeholder="Nombre Apellido" required></label>
+          <label>Correo <input id="newEmail" type="email" placeholder="correo@dominio.com" required></label>
+          <label>Contraseña <input id="newPassword" type="password" placeholder="Mínimo 6 caracteres" required></label>
+          <label>Rol
+            <select id="newRole">
+              <option value="Citizen">Ciudadano</option>
+              <option value="Operator">Operador</option>
+              <option value="Analyst">Analista</option>
+              <option value="Auditor">Auditor</option>
+              <option value="Admin">Administrador</option>
+            </select>
+          </label>
+          <div style="display:flex;align-items:flex-end">
+            <button class="primary-button" id="submitCreateUserBtn" style="width:100%">Crear</button>
+          </div>
+        </div>
+      </div>
+      <div class="search-bar">
+        <input id="userSearchInput" placeholder="Buscar por nombre o usuario..." type="search" style="flex:1">
+        <select id="userRoleFilter">
+          <option value="">Todos los roles</option>
+          <option value="Admin">Administrador</option>
+          <option value="Operator">Operador</option>
+          <option value="Citizen">Ciudadano</option>
+          <option value="Analyst">Analista</option>
+          <option value="Auditor">Auditor</option>
+        </select>
+        <button class="secondary-button" id="searchUsersBtn">Buscar</button>
+      </div>
+      <div class="table-shell">
+        <table>
+          <thead>
+            <tr><th>Usuario</th><th>Nombre</th><th>Correo</th><th>Rol</th><th>Estado</th><th>Acciones</th></tr>
+          </thead>
+          <tbody id="usersTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ─── Geocercas (Admin) ─── -->
+    <section id="panel-geofences" class="panel-section" style="display:none">
+      <div class="panel-header">
+        <div><p class="eyebrow">Configuración</p><h2>Geocercas activas</h2></div>
+        <div style="display:flex;gap:10px">
+          <button class="primary-button" id="showCreateGeofenceBtn">+ Nueva geocerca</button>
+          <button class="secondary-button" id="refreshGeofencesBtn">Actualizar</button>
+        </div>
+      </div>
+
+      <!-- Inline create form -->
+      <div id="createGeofenceForm" class="card card-padded" style="display:none;margin-bottom:20px">
+        <div class="card-header-inline" style="margin-bottom:16px">
+          <h3 style="margin:0">Nueva geocerca</h3>
+          <button class="ghost-button" id="cancelCreateGeofenceBtn">✕</button>
+        </div>
+        <div class="form-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:16px">
+          <label>Código <input id="geoCode" placeholder="MED-NORTE" required></label>
+          <label>Nombre <input id="geoName" placeholder="Norte de Medellín" required></label>
+          <label>Barrio/referencia <input id="geoNeighborhood" placeholder="Barrio referencia" required></label>
+        </div>
+        <p style="color:var(--muted);font-size:0.84rem;margin:0 0 10px">
+          <strong>Dibuja el polígono:</strong> haz clic en el mapa para agregar vértices (mínimo 3). Luego pulsa <em>Completar polígono</em>.
+        </p>
+        <div id="drawGeofenceMap" style="height:320px;border-radius:8px;overflow:hidden;border:1px solid var(--line);margin-bottom:12px;position:relative;z-index:0"></div>
+        <div style="display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap">
+          <button class="secondary-button" id="completeGeofenceBtn" type="button">✔ Completar polígono</button>
+          <button class="ghost-button" id="clearGeofenceBtn" type="button">↺ Limpiar</button>
+          <span id="geofencePointCount" style="color:var(--muted);font-size:0.84rem">0 puntos</span>
+        </div>
+        <label style="display:grid;gap:6px;color:var(--muted);font-size:0.83rem;font-weight:700;margin-bottom:16px">
+          WKT generado (editable manualmente)
+          <input id="geoWkt" placeholder="POLYGON((-75.575 6.250,...))" style="font-family:monospace;font-size:0.78rem">
+        </label>
+        <button class="primary-button" id="submitCreateGeofenceBtn">Crear geocerca</button>
+      </div>
+
+      <div class="two-col-grid">
+        <div class="table-shell">
+          <table>
+            <thead>
+              <tr><th>Código</th><th>Nombre</th><th>Barrio</th><th>Estado</th><th>Ver</th></tr>
+            </thead>
+            <tbody id="geofencesTableBody"></tbody>
+          </table>
+        </div>
+        <div class="card card-padded">
+          <p class="eyebrow">Vista previa</p>
+          <h3 id="geofenceMapTitle" style="margin:0 0 12px;color:var(--navy)">Selecciona una geocerca</h3>
+          <div id="geofenceMap" class="weather-map" style="height:300px"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Pendientes (Operator) ─── -->
+    <section id="panel-pending" class="panel-section" style="display:none">
+      <div class="panel-header">
+        <div><p class="eyebrow">Revisión</p><h2>Alertas pendientes de aprobación</h2></div>
+        <button class="secondary-button" id="refreshPendingBtn">Actualizar</button>
+      </div>
+      <p id="noPendingMsg" style="display:none;text-align:center;color:var(--muted);padding:40px">
+        No hay alertas pendientes en este momento.
+      </p>
+      <div id="pendingAlertsList" class="alert-cards-grid"></div>
+    </section>
+
+    <!-- ─── Mi Zona (Citizen) ─── -->
+    <section id="panel-myzone" class="panel-section" style="display:none">
+      <div class="panel-header">
+        <div><p class="eyebrow">Tu área</p><h2>Mi zona de alertas</h2></div>
+        <div style="display:flex;gap:10px;align-items:center">
+          <select id="citizenGeofenceSelect" style="min-width:200px">
+            <option value="">Selecciona tu zona...</option>
+          </select>
+          <button class="secondary-button" id="refreshZoneBtn">Actualizar</button>
+        </div>
+      </div>
+      <div id="myzoneMap" class="weather-map" style="height:280px;margin-bottom:18px"></div>
+      <div id="zoneAlertsList" class="alert-cards-grid"></div>
+      <p id="zoneNoAlerts" style="display:none;color:var(--muted);text-align:center;padding:32px">
+        ✅ No hay alertas activas en tu zona. ¡Mantente alerta!
+      </p>
+      <p id="zoneSelectHint" style="text-align:center;color:var(--muted);padding:32px">
+        Selecciona tu zona para ver las alertas activas en tu área.
+      </p>
+    </section>
+
+    <!-- ─── Reportar (Citizen) ─── -->
+    <section id="panel-report" class="panel-section" style="display:none">
+      <div class="panel-header">
+        <div><p class="eyebrow">Ciudadano</p><h2>Reportar emergencia</h2></div>
+      </div>
+      <div class="two-col-grid">
+        <div class="card card-padded">
+          <div class="card-header-inline" style="margin-bottom:18px">
+            <h3 style="margin:0">¿Ves una emergencia?</h3>
+          </div>
+          <form id="citizenAlertForm" class="form-grid">
+            <label class="wide">¿Qué está ocurriendo?
+              <input id="citizenTitle" required maxlength="160" placeholder="Ej: Inundación en mi calle">
+            </label>
+            <label class="wide">Describe la situación
+              <textarea id="citizenDescription" rows="3" required maxlength="2000" placeholder="Más detalles sobre la emergencia..."></textarea>
+            </label>
+            <label>Nivel de riesgo
+              <select id="citizenSeverity"
+                title="Moderado: situación que puede empeorar · Severo: daño real posible · Crítico: peligro inmediato">
+                <option value="Moderate">Moderado</option>
+                <option value="Severe">Severo</option>
+                <option value="Critical">Crítico</option>
+              </select>
+            </label>
+            <label>Zona <select id="citizenGeofence" required></select></label>
+            <label>Latitud <input id="citizenLat" type="number" step="0.000001" value="6.244203"></label>
+            <label style="position:relative">
+              Longitud
+              <input id="citizenLon" type="number" step="0.000001" value="-75.581211">
+              <button type="button" class="ghost-button" id="citizenGeolocate" style="position:absolute;right:0;top:0;font-size:0.78rem;min-height:auto;padding:2px 6px">📍</button>
+            </label>
+            <label class="wide">Dirección (referencia)
+              <input id="citizenAddress" maxlength="200" placeholder="Ej: Calle 10 con Carrera 50">
+            </label>
+            <button class="primary-button wide" type="submit">Enviar reporte</button>
+          </form>
+        </div>
+        <div class="card card-padded">
+          <div class="card-header-inline" style="margin-bottom:12px">
+            <h3 style="margin:0">Confirmar alerta activa</h3>
+            <button class="secondary-button" id="refreshActiveAlertsBtn" type="button">Actualizar</button>
+          </div>
+          <p style="color:var(--muted);font-size:0.86rem;margin:0 0 14px">
+            Si estás en la zona de una alerta aprobada, confirma que la estás viendo en campo.
+          </p>
+          <div id="activeAlertsForConfirm" class="confirm-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Clima (All roles) ─── -->
+    <section id="panel-weather" class="panel-section" style="display:none">
+      <div class="panel-header">
+        <div><p class="eyebrow">Open-Meteo</p><h2>Estado meteorológico</h2></div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <!-- Controles de umbral: solo Admin -->
+          <div id="thresholdControls" style="display:none;gap:6px;align-items:center;border-right:1px solid var(--line);padding-right:10px;margin-right:4px">
+            <span style="font-size:0.75rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.04em">Umbrales:</span>
+            <button class="ghost-button threshold-btn active-threshold" id="thresholdOriginalBtn"
+              title="Umbrales reales: requiere precipitación medible para elevar el nivel de riesgo.">
+              Reglas originales
+            </button>
+            <button class="ghost-button threshold-btn" id="thresholdDemoBtn"
+              title="Umbrales demo: muy sensibles — disparan auto-alerta con condiciones normales de Medellín para demostrar el flujo completo.">
+              Demo
+            </button>
+          </div>
+          <button class="ghost-button" id="geolocateWeatherBtn" title="Usar mi ubicación">🌐</button>
+          <button class="secondary-button" id="weatherBtn">Consultar</button>
+        </div>
+      </div>
+
+      <!-- Location status banner -->
+      <div id="weatherLocationBanner" class="location-banner" style="display:none"></div>
+      <!-- Geofence info pill -->
+      <div id="weatherGeofenceInfo" class="geofence-info-banner" style="display:none"></div>
+
+      <div class="coordinate-row" style="padding:0 0 16px">
+        <label>Latitud <input id="weatherLatInput" type="number" step="0.000001" value="6.244203"></label>
+        <label>Longitud <input id="weatherLonInput" type="number" step="0.000001" value="-75.581211"></label>
+      </div>
+      <div class="two-col-grid">
+        <div>
+          <div class="weather-summary" id="weatherSummaryMain"><strong>Sin lectura</strong><span>Consulta el estado actual.</span></div>
+          <div class="forecast-list" id="forecastListMain"></div>
+        </div>
+        <div id="weatherMapMain" class="weather-map" style="height:320px"></div>
+      </div>
+
+      <!-- Location-based alerts -->
+      <div id="weatherAlertsSection" style="display:none;margin-top:24px">
+        <h3 id="weatherAlertsSectionTitle" style="margin:0 0 14px;color:var(--navy)">Alertas en tu zona</h3>
+        <div id="weatherAlertsList" class="alert-cards-grid"></div>
+        <p id="weatherNoAlerts" style="display:none;color:var(--muted);text-align:center;padding:20px">
+          ✅ No hay alertas activas en este momento.
+        </p>
+      </div>
+    </section>
+
+    <footer class="app-footer">
+      <div class="footer-institution">
+        <img src="/assets/facultad-ingenieria.png" alt="Facultad de Ingenieria - Politecnico Colombiano Jaime Isaza Cadavid">
+      </div>
+      <div class="footer-meta">
+        <p><strong>Docente:</strong> Andr&eacute;s Felipe Gonz&aacute;lez Orozco</p>
+        <p><strong>Desarrolladores:</strong> Federico Bayer Cuartas &middot; Rafael Estiven Uribe &Aacute;lvarez</p>
+        <a href="https://github.com/EstivenUribe/Alerto" target="_blank" rel="noreferrer">github.com/EstivenUribe/Alerto</a>
+      </div>
+    </footer>
+
+  </div><!-- /.app-main -->
+</div><!-- /#appShell -->
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="/app.js"></script>
+</body>
+</html>

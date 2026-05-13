@@ -1,0 +1,706 @@
+{
+  "info": {
+    "_postman_id": "4f48f1df-7f85-48d2-80c2-alerto2026",
+    "name": "Alerto API - Coleccion completa",
+    "description": "Coleccion importable para validar Alerto Management API. Incluye autenticacion JWT, CRUD, geocercas, usuarios, clima, confirmaciones ciudadanas, observabilidad, pruebas negativas y flujos por rol alineados con las politicas actuales.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5070", "type": "string" },
+    { "key": "accessToken", "value": "", "type": "string" },
+    { "key": "operatorAccessToken", "value": "", "type": "string" },
+    { "key": "citizenAccessToken", "value": "", "type": "string" },
+    { "key": "refreshToken", "value": "", "type": "string" },
+    { "key": "twoFactorToken", "value": "", "type": "string" },
+    { "key": "m2mAccessToken", "value": "", "type": "string" },
+    { "key": "geofenceId", "value": "", "type": "string" },
+    { "key": "geofenceVersion", "value": "0", "type": "string" },
+    { "key": "alertId", "value": "", "type": "string" },
+    { "key": "alertVersion", "value": "0", "type": "string" },
+    { "key": "userId", "value": "", "type": "string" },
+    { "key": "userVersion", "value": "0", "type": "string" },
+    { "key": "confirmationId", "value": "", "type": "string" },
+    { "key": "weatherLatitude", "value": "6.244203", "type": "string" },
+    { "key": "weatherLongitude", "value": "-75.581211", "type": "string" },
+    { "key": "fromUtc", "value": "2026-05-12T00:00:00Z", "type": "string" },
+    { "key": "toUtc", "value": "2026-05-13T00:00:00Z", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "00 - Observabilidad",
+      "item": [
+        {
+          "name": "Health live",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": "{{baseUrl}}/health/live"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status 200', () => pm.response.to.have.status(200));"] } }]
+        },
+        {
+          "name": "Health ready",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": "{{baseUrl}}/health/ready"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status 200 o 503', () => pm.expect([200, 503]).to.include(pm.response.code));"] } }]
+        },
+        {
+          "name": "Metricas basicas",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": "{{baseUrl}}/metrics/basic"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status 200', () => pm.response.to.have.status(200));"] } }]
+        }
+      ]
+    },
+    {
+      "name": "01 - Autenticacion",
+      "item": [
+        {
+          "name": "Login admin",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"AlertoAdmin123!\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/auth/login"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Login correcto o requiere 2FA', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "if (json.accessToken) pm.collectionVariables.set('accessToken', json.accessToken);",
+                  "if (json.refreshToken) pm.collectionVariables.set('refreshToken', json.refreshToken);",
+                  "if (json.twoFactorToken) pm.collectionVariables.set('twoFactorToken', json.twoFactorToken);",
+                  "if (json.role) pm.collectionVariables.set('currentRole', json.role);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login operador demo",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"operador\",\n  \"password\": \"Alerto2026!\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/auth/login"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Login operador 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "if (json.accessToken) pm.collectionVariables.set('operatorAccessToken', json.accessToken);",
+                  "if (json.accessToken) pm.collectionVariables.set('accessToken', json.accessToken);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login ciudadano demo",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"ciudadano\",\n  \"password\": \"Alerto2026!\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/auth/login"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Login ciudadano 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "if (json.accessToken) pm.collectionVariables.set('citizenAccessToken', json.accessToken);",
+                  "if (json.accessToken) pm.collectionVariables.set('accessToken', json.accessToken);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Verificar 2FA",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"twoFactorToken\": \"{{twoFactorToken}}\",\n  \"code\": \"123456\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/auth/verify-2fa"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["if (pm.response.code === 200) { const json = pm.response.json(); if (json.accessToken) pm.collectionVariables.set('accessToken', json.accessToken); if (json.refreshToken) pm.collectionVariables.set('refreshToken', json.refreshToken); }"] } }]
+        },
+        {
+          "name": "Refresh token",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/auth/refresh"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Refresh 200', () => pm.response.to.have.status(200));", "const json = pm.response.json();", "if (json.accessToken) pm.collectionVariables.set('accessToken', json.accessToken);", "if (json.refreshToken) pm.collectionVariables.set('refreshToken', json.refreshToken);"] } }]
+        },
+        {
+          "name": "Token M2M rules-engine",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"clientId\": \"rules-engine\",\n  \"clientSecret\": \"rules-engine-secret\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/auth/m2m/token"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('M2M 200', () => pm.response.to.have.status(200));", "const json = pm.response.json();", "if (json.accessToken) pm.collectionVariables.set('m2mAccessToken', json.accessToken);"] } }]
+        },
+        {
+          "name": "Setup 2FA",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": "{{baseUrl}}/api/v1/auth/2fa/setup"
+          }
+        },
+        {
+          "name": "Enable 2FA",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"123456\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/auth/2fa/enable"
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/auth/logout"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Logout 204', () => pm.response.to.have.status(204));"] } }]
+        }
+      ]
+    },
+    {
+      "name": "02 - Geocercas",
+      "item": [
+        {
+          "name": "Listar geocercas",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/api/v1/geofences?pageNumber=1&pageSize=10"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status 200', () => pm.response.to.have.status(200));", "const json = pm.response.json();", "if (json.items && json.items.length) { pm.collectionVariables.set('geofenceId', json.items[0].id); pm.collectionVariables.set('geofenceVersion', json.items[0].version); }"] } }]
+        },
+        {
+          "name": "Consultar geocerca por id",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/api/v1/geofences/{{geofenceId}}"
+          }
+        },
+        {
+          "name": "Crear geocerca",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"MEDE-POSTMAN-{{$timestamp}}\",\n  \"name\": \"Zona Postman {{$timestamp}}\",\n  \"polygonWkt\": \"POLYGON((-75.58 6.21,-75.56 6.21,-75.56 6.23,-75.58 6.23,-75.58 6.21))\",\n  \"neighborhood\": \"Guayabal\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/geofences"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status 201', () => pm.response.to.have.status(201));", "const json = pm.response.json();", "pm.collectionVariables.set('geofenceId', json.id);", "pm.collectionVariables.set('geofenceVersion', json.version);"] } }]
+        },
+        {
+          "name": "Actualizar geocerca",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Zona Postman actualizada\",\n  \"polygonWkt\": \"POLYGON((-75.59 6.20,-75.55 6.20,-75.55 6.24,-75.59 6.24,-75.59 6.20))\",\n  \"neighborhood\": \"Guayabal\",\n  \"expectedVersion\": {{geofenceVersion}}\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/geofences/{{geofenceId}}"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["if (pm.response.code === 200) { const json = pm.response.json(); pm.collectionVariables.set('geofenceVersion', json.version); }"] } }]
+        },
+        {
+          "name": "Inactivar geocerca",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"expectedVersion\": {{geofenceVersion}},\n  \"reason\": \"Prueba Postman\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/geofences/{{geofenceId}}/deactivate"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["if (pm.response.code === 200) { const json = pm.response.json(); pm.collectionVariables.set('geofenceVersion', json.version); }"] } }]
+        },
+        {
+          "name": "Activar geocerca",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"expectedVersion\": {{geofenceVersion}},\n  \"reason\": \"Prueba Postman\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/geofences/{{geofenceId}}/activate"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["if (pm.response.code === 200) { const json = pm.response.json(); pm.collectionVariables.set('geofenceVersion', json.version); }"] } }]
+        }
+      ]
+    },
+    {
+      "name": "03 - Alertas",
+      "item": [
+        {
+          "name": "Listar alertas",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/api/v1/alerts?pageNumber=1&pageSize=10"
+          }
+        },
+        {
+          "name": "Crear alerta",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Creciente subita rio Medellin {{$timestamp}}\",\n  \"description\": \"Se detecta aumento acelerado del caudal con riesgo para sectores riberenos.\",\n  \"severity\": \"Critical\",\n  \"sourceSystem\": \"Postman\",\n  \"address\": \"Av. Regional con Calle 30, Medellin\",\n  \"latitude\": 6.230145,\n  \"longitude\": -75.573921,\n  \"geofenceId\": \"{{geofenceId}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/alerts"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status 201', () => pm.response.to.have.status(201));", "const json = pm.response.json();", "pm.collectionVariables.set('alertId', json.id);", "pm.collectionVariables.set('alertVersion', json.version);"] } }]
+        },
+        {
+          "name": "Consultar alerta por id",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/api/v1/alerts/{{alertId}}"
+          }
+        },
+        {
+          "name": "Actualizar alerta",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Creciente subita rio Medellin actualizada\",\n  \"description\": \"La alerta fue actualizada con informacion complementaria.\",\n  \"severity\": \"Severe\",\n  \"sourceSystem\": \"Postman\",\n  \"address\": \"Av. Regional con Calle 30, Medellin\",\n  \"latitude\": 6.230145,\n  \"longitude\": -75.573921,\n  \"geofenceId\": \"{{geofenceId}}\",\n  \"expectedVersion\": {{alertVersion}}\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/alerts/{{alertId}}"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["if (pm.response.code === 200) { const json = pm.response.json(); pm.collectionVariables.set('alertVersion', json.version); }"] } }]
+        },
+        {
+          "name": "Aprobar alerta",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"expectedVersion\": {{alertVersion}}\n}" },
+            "url": "{{baseUrl}}/api/v1/alerts/{{alertId}}/approve"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["if (pm.response.code === 200) { const json = pm.response.json(); pm.collectionVariables.set('alertVersion', json.version); }"] } }]
+        },
+        {
+          "name": "Rechazar alerta pendiente",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"expectedVersion\": {{alertVersion}},\n  \"reason\": \"Informacion insuficiente para continuar.\"\n}" },
+            "url": "{{baseUrl}}/api/v1/alerts/{{alertId}}/reject"
+          }
+        },
+        {
+          "name": "Cancelar alerta",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"expectedVersion\": {{alertVersion}},\n  \"reason\": \"Cancelacion operativa de prueba.\"\n}" },
+            "url": "{{baseUrl}}/api/v1/alerts/{{alertId}}/cancel"
+          }
+        },
+        {
+          "name": "Difundir alerta",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"expectedVersion\": {{alertVersion}},\n  \"channel\": \"Sms\",\n  \"destination\": \"+573001234567\",\n  \"providerReference\": \"POSTMAN-REF-{{$timestamp}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/alerts/{{alertId}}/dispatch"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["if (pm.response.code === 200) { const json = pm.response.json(); pm.collectionVariables.set('alertVersion', json.version); }"] } }]
+        },
+        {
+          "name": "Confirmar alerta como ciudadano u operador",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"notes\": \"La situacion fue confirmada visualmente en el punto reportado.\"\n}" },
+            "url": "{{baseUrl}}/api/v1/alerts/{{alertId}}/citizen-confirm"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["if (pm.response.code === 201) { const json = pm.response.json(); pm.collectionVariables.set('confirmationId', json.id); }"] } }]
+        },
+        {
+          "name": "Consultar confirmaciones ciudadanas",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/api/v1/alerts/{{alertId}}/citizen-confirmations"
+          }
+        },
+        {
+          "name": "Eliminar administrativamente alerta",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"expectedVersion\": {{alertVersion}},\n  \"reason\": \"Registro retirado por validacion administrativa durante pruebas.\"\n}" },
+            "url": "{{baseUrl}}/api/v1/alerts/{{alertId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "04 - Meteorologia",
+      "item": [
+        {
+          "name": "Dashboard meteorologico",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/api/v1/weather/dashboard?latitude={{weatherLatitude}}&longitude={{weatherLongitude}}"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status 200', () => pm.response.to.have.status(200));", "const json = pm.response.json();", "if (json.autoAlertId) pm.collectionVariables.set('alertId', json.autoAlertId);"] } }]
+        },
+        {
+          "name": "Historial meteorologico",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/api/v1/weather/history?latitude={{weatherLatitude}}&longitude={{weatherLongitude}}&fromUtc={{fromUtc}}&toUtc={{toUtc}}"
+          }
+        },
+        {
+          "name": "Historial meteorologico con rango invalido",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/api/v1/weather/history?latitude={{weatherLatitude}}&longitude={{weatherLongitude}}&fromUtc={{toUtc}}&toUtc={{fromUtc}}"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status 400', () => pm.response.to.have.status(400));"] } }]
+        }
+      ]
+    },
+    {
+      "name": "05 - Usuarios",
+      "item": [
+        {
+          "name": "Listar usuarios",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/api/v1/users?pageNumber=1&pageSize=10"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["if (pm.response.code === 200) { const json = pm.response.json(); if (json.items && json.items.length) { pm.collectionVariables.set('userId', json.items[0].id); pm.collectionVariables.set('userVersion', json.items[0].version); } }"] } }]
+        },
+        {
+          "name": "Crear usuario Citizen",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"ciudadano{{$timestamp}}\",\n  \"displayName\": \"Ciudadano Postman\",\n  \"email\": \"ciudadano{{$timestamp}}@alerto.local\",\n  \"password\": \"Ciudadano2026!\",\n  \"role\": \"Citizen\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/users"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status 201', () => pm.response.to.have.status(201));", "const json = pm.response.json();", "pm.collectionVariables.set('userId', json.id);", "pm.collectionVariables.set('userVersion', json.version);"] } }]
+        },
+        {
+          "name": "Consultar usuario por id",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/api/v1/users/{{userId}}"
+          }
+        },
+        {
+          "name": "Actualizar usuario",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"displayName\": \"Ciudadano Postman Actualizado\",\n  \"email\": \"ciudadano.actualizado{{$timestamp}}@alerto.local\",\n  \"role\": \"Citizen\",\n  \"expectedVersion\": {{userVersion}}\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/users/{{userId}}"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["if (pm.response.code === 200) { const json = pm.response.json(); pm.collectionVariables.set('userVersion', json.version); }"] } }]
+        },
+        {
+          "name": "Desactivar usuario",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"expectedVersion\": {{userVersion}},\n  \"reason\": \"Prueba Postman\"\n}" },
+            "url": "{{baseUrl}}/api/v1/users/{{userId}}/deactivate"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["if (pm.response.code === 200) { const json = pm.response.json(); pm.collectionVariables.set('userVersion', json.version); }"] } }]
+        },
+        {
+          "name": "Activar usuario",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"expectedVersion\": {{userVersion}},\n  \"reason\": \"Prueba Postman\"\n}" },
+            "url": "{{baseUrl}}/api/v1/users/{{userId}}/activate"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["if (pm.response.code === 200) { const json = pm.response.json(); pm.collectionVariables.set('userVersion', json.version); }"] } }]
+        }
+      ]
+    },
+    {
+      "name": "06 - Pruebas negativas",
+      "item": [
+        {
+          "name": "Endpoint protegido sin token",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/v1/alerts"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status 401', () => pm.response.to.have.status(401));"] } }]
+        },
+        {
+          "name": "Login invalido",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"incorrecta\"\n}" },
+            "url": "{{baseUrl}}/api/v1/auth/login"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status 401', () => pm.response.to.have.status(401));"] } }]
+        },
+        {
+          "name": "Confirmacion duplicada",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"notes\": \"Intento duplicado para validar 409.\"\n}" },
+            "url": "{{baseUrl}}/api/v1/alerts/{{alertId}}/citizen-confirm"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status 409 si ya existia confirmacion', () => pm.expect([201, 409, 422]).to.include(pm.response.code));"] } }]
+        }
+      ]
+    },
+    {
+      "name": "07 - Flujos por rol",
+      "item": [
+        {
+          "name": "Crear reporte como Citizen",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{citizenAccessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Reporte ciudadano {{$timestamp}}\",\n  \"description\": \"Ciudadano reporta una situacion que debe quedar pendiente de revision operativa.\",\n  \"severity\": \"Moderate\",\n  \"sourceSystem\": \"App ciudadana\",\n  \"address\": \"Calle 10 con Carrera 50, Medellin\",\n  \"latitude\": 6.244203,\n  \"longitude\": -75.581211,\n  \"geofenceId\": \"{{geofenceId}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/alerts"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Citizen puede crear alerta pendiente', () => pm.response.to.have.status(201));", "const json = pm.response.json();", "pm.collectionVariables.set('alertId', json.id);", "pm.collectionVariables.set('alertVersion', json.version);"] } }]
+        },
+        {
+          "name": "Aprobar reporte con Operator",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{operatorAccessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"expectedVersion\": {{alertVersion}}\n}" },
+            "url": "{{baseUrl}}/api/v1/alerts/{{alertId}}/approve"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Operator puede aprobar', () => pm.response.to.have.status(200));", "const json = pm.response.json();", "pm.collectionVariables.set('alertVersion', json.version);"] } }]
+        },
+        {
+          "name": "Operator no puede difundir",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{operatorAccessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"expectedVersion\": {{alertVersion}},\n  \"channel\": \"Sms\",\n  \"destination\": \"+573001234567\",\n  \"providerReference\": \"OPERATOR-DENIED-{{$timestamp}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/alerts/{{alertId}}/dispatch"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Operator recibe 403 al difundir', () => pm.response.to.have.status(403));"] } }]
+        },
+        {
+          "name": "RulesEngine puede difundir",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{m2mAccessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"expectedVersion\": {{alertVersion}},\n  \"channel\": \"Sms\",\n  \"destination\": \"+573001234567\",\n  \"providerReference\": \"M2M-POSTMAN-{{$timestamp}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/alerts/{{alertId}}/dispatch"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('RulesEngine puede difundir', () => pm.response.to.have.status(200));", "const json = pm.response.json();", "pm.collectionVariables.set('alertVersion', json.version);"] } }]
+        },
+        {
+          "name": "Consultar clima como Citizen",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{citizenAccessToken}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/api/v1/weather/dashboard?latitude={{weatherLatitude}}&longitude={{weatherLongitude}}"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Citizen puede consultar clima', () => pm.response.to.have.status(200));"] } }]
+        }
+      ]
+    }
+  ]
+}

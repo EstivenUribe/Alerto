@@ -36,6 +36,14 @@ public sealed class GeofenceRepository : IGeofenceRepository
         return _dbContext.Geofences.AnyAsync(x => x.Id == id && x.IsActive, cancellationToken);
     }
 
+    public Task<Geofence?> GetFirstActiveAsync(CancellationToken cancellationToken)
+    {
+        return _dbContext.Geofences
+            .Where(x => x.IsActive)
+            .OrderBy(x => x.Name)
+            .FirstOrDefaultAsync(cancellationToken);
+    }
+
     public async Task<PagedResponse<Geofence>> SearchAsync(GeofenceQueryRequest request, CancellationToken cancellationToken)
     {
         var query = _dbContext.Geofences.AsNoTracking().AsQueryable();

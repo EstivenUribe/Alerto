@@ -19,6 +19,8 @@ public sealed class AlertoDbContext : DbContext
     public DbSet<User> Users => Set<User>();
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
     public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
+    public DbSet<WeatherReading> WeatherReadings => Set<WeatherReading>();
+    public DbSet<AlertCitizenConfirmation> AlertCitizenConfirmations => Set<AlertCitizenConfirmation>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -41,7 +43,9 @@ public sealed class AlertoDbContext : DbContext
             builder.Property(x => x.Severity).HasConversion<string>().HasMaxLength(20);
             builder.Property(x => x.RejectionReason).HasMaxLength(500);
             builder.Property(x => x.CancellationReason).HasMaxLength(500);
+            builder.Property(x => x.DeletionReason).HasMaxLength(500);
             builder.Property(x => x.Version).IsConcurrencyToken();
+            builder.HasIndex(x => x.IsDeleted);
             builder.HasMany(x => x.Dispatches)
                 .WithOne()
                 .HasForeignKey(x => x.AlertId)
@@ -120,6 +124,30 @@ public sealed class AlertoDbContext : DbContext
             builder.Property(x => x.LastError).HasMaxLength(1000);
             builder.HasIndex(x => x.ProcessedAtUtc);
             builder.HasIndex(x => x.OccurredAtUtc);
+        });
+
+        modelBuilder.Entity<AlertCitizenConfirmation>(builder =>
+        {
+            builder.ToTable("alert_citizen_confirmations");
+            builder.HasKey(x => x.Id);
+            builder.Property(x => x.Notes).HasMaxLength(500);
+            builder.Property(x => x.Version).IsConcurrencyToken();
+            builder.HasIndex(x => x.AlertId);
+            builder.HasIndex(x => new { x.AlertId, x.ConfirmedByUserId }).IsUnique();
+        });
+
+        modelBuilder.Entity<WeatherReading>(builder =>
+        {
+            builder.ToTable("weather_readings");
+            builder.HasKey(x => x.Id);
+            builder.Property(x => x.Latitude).HasPrecision(9, 6).IsRequired();
+            builder.Property(x => x.Longitude).HasPrecision(9, 6).IsRequired();
+            builder.Property(x => x.PrecipitationMmPerHour).HasPrecision(7, 2).IsRequired();
+            builder.Property(x => x.RiskLevel).HasConversion<string>().HasMaxLength(20);
+            builder.Property(x => x.HourlyForecastJson).HasColumnType("jsonb").IsRequired();
+            builder.Property(x => x.Version).IsConcurrencyToken();
+            builder.HasIndex(x => x.CreatedAtUtc);
+            builder.HasIndex(x => new { x.Latitude, x.Longitude, x.CreatedAtUtc });
         });
     }
 }

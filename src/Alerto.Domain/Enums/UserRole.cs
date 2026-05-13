@@ -6,5 +6,6 @@ public enum UserRole
     Operator = 2,
     Analyst = 3,
     Auditor = 4,
-    RulesEngine = 5
+    RulesEngine = 5,
+    Citizen = 6
 }

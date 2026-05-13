@@ -11,5 +11,8 @@ public interface IAlertService
     Task<AlertResponse> ApproveAsync(Guid id, ApproveAlertRequest request, CancellationToken cancellationToken);
     Task<AlertResponse> RejectAsync(Guid id, RejectAlertRequest request, CancellationToken cancellationToken);
     Task<AlertResponse> CancelAsync(Guid id, CancelAlertRequest request, CancellationToken cancellationToken);
+    Task DeleteAsync(Guid id, DeleteAlertRequest request, CancellationToken cancellationToken);
     Task<AlertResponse> DispatchAsync(Guid id, DispatchAlertRequest request, CancellationToken cancellationToken);
+    Task<CitizenConfirmationResponse> CitizenConfirmAsync(Guid id, CitizenConfirmAlertRequest request, CancellationToken cancellationToken);
+    Task<CitizenConfirmationResponse[]> GetCitizenConfirmationsAsync(Guid id, CancellationToken cancellationToken);
 }

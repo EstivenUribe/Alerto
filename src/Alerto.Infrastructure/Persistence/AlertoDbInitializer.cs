@@ -29,6 +29,8 @@ public sealed class AlertoDbInitializer
     {
         await _dbContext.Database.MigrateAsync(cancellationToken);
 
+        var now = DateTime.UtcNow;
+
         if (!await _dbContext.Users.AnyAsync(cancellationToken))
         {
             var admin = User.Create(
@@ -37,9 +39,39 @@ public sealed class AlertoDbInitializer
                 _bootstrapAdminOptions.Email,
                 UserRole.Admin,
                 _passwordHasher.HashPassword(_bootstrapAdminOptions.Password),
-                DateTime.UtcNow);
+                now);
 
             await _dbContext.Users.AddAsync(admin, cancellationToken);
+        }
+
+        var existingUsernames = await _dbContext.Users
+            .Select(u => u.Username.ToLower())
+            .ToListAsync(cancellationToken);
+
+        if (!existingUsernames.Contains("operador"))
+        {
+            var operador = User.Create(
+                "operador",
+                "Operador Demo",
+                "operador@alerto.local",
+                UserRole.Operator,
+                _passwordHasher.HashPassword("Alerto2026!"),
+                now);
+
+            await _dbContext.Users.AddAsync(operador, cancellationToken);
+        }
+
+        if (!existingUsernames.Contains("ciudadano"))
+        {
+            var ciudadano = User.Create(
+                "ciudadano",
+                "Ciudadano Demo",
+                "ciudadano@alerto.local",
+                UserRole.Citizen,
+                _passwordHasher.HashPassword("Alerto2026!"),
+                now);
+
+            await _dbContext.Users.AddAsync(ciudadano, cancellationToken);
         }
 
         if (!await _dbContext.Geofences.AnyAsync(cancellationToken))
@@ -49,7 +81,7 @@ public sealed class AlertoDbInitializer
                 "Centro Medellin",
                 "POLYGON((-75.575 6.250,-75.565 6.250,-75.565 6.260,-75.575 6.260,-75.575 6.250))",
                 "La Candelaria",
-                DateTime.UtcNow);
+                now);
 
             await _dbContext.Geofences.AddAsync(geofence, cancellationToken);
         }

@@ -62,6 +62,10 @@ public sealed class Alert : BaseEntity
     public DateTime? CancelledAtUtc { get; private set; }
     public string? RejectionReason { get; private set; }
     public string? CancellationReason { get; private set; }
+    public bool IsDeleted { get; private set; }
+    public Guid? DeletedByUserId { get; private set; }
+    public DateTime? DeletedAtUtc { get; private set; }
+    public string? DeletionReason { get; private set; }
     public DateTime ApprovalDeadlineUtc { get; private set; }
     public IReadOnlyCollection<AlertDispatch> Dispatches => _dispatches.AsReadOnly();
     public IReadOnlyCollection<ApprovalRecord> ApprovalRecords => _approvalRecords.AsReadOnly();
@@ -172,6 +176,20 @@ public sealed class Alert : BaseEntity
         CancelledAtUtc = utcNow;
         Touch(utcNow);
         RaiseDomainEvent(new AlertCancelledDomainEvent(Id, cancelledByUserId, utcNow));
+    }
+
+    public void DeleteAdministratively(Guid deletedByUserId, string reason, DateTime utcNow)
+    {
+        if (IsDeleted)
+        {
+            throw new DomainRuleException("La alerta ya fue eliminada administrativamente.");
+        }
+
+        IsDeleted = true;
+        DeletedByUserId = deletedByUserId;
+        DeletedAtUtc = utcNow;
+        DeletionReason = Normalize(reason, nameof(reason), 500);
+        Touch(utcNow);
     }
 
     public AlertDispatch Dispatch(

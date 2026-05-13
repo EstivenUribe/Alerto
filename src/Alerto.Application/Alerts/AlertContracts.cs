@@ -39,6 +39,8 @@ public sealed record RejectAlertRequest(int ExpectedVersion, string Reason);
 
 public sealed record CancelAlertRequest(int ExpectedVersion, string Reason);
 
+public sealed record DeleteAlertRequest(int ExpectedVersion, string Reason);
+
 public sealed record DispatchAlertRequest(
     int ExpectedVersion,
     DispatchChannel Channel,
@@ -80,3 +82,12 @@ public sealed record AlertListResponse(
     int TotalPages,
     bool HasPreviousPage,
     bool HasNextPage);
+
+public sealed record CitizenConfirmAlertRequest(string Notes = "");
+
+public sealed record CitizenConfirmationResponse(
+    Guid Id,
+    Guid AlertId,
+    Guid ConfirmedByUserId,
+    string Notes,
+    DateTime ConfirmedAtUtc);

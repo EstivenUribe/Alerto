@@ -11,11 +11,18 @@ public sealed class ApiDocumentationOperationFilter : IOperationFilter
 {
     private static readonly Dictionary<string, string> PolicyDescriptions = new(StringComparer.OrdinalIgnoreCase)
     {
-        [AuthPolicies.AlertReaders] = "Roles permitidos: Admin, Operator, Analyst, Auditor, RulesEngine.",
+        [AuthPolicies.Admin] = "Roles permitidos: Admin.",
+        [AuthPolicies.Operator] = "Roles permitidos: Admin, Operator.",
+        [AuthPolicies.Analyst] = "Roles permitidos: Admin, Analyst.",
+        [AuthPolicies.Auditor] = "Roles permitidos: Admin, Auditor.",
+        [AuthPolicies.AlertReaders] = "Roles permitidos: Admin, Operator, Analyst, Auditor, RulesEngine, Citizen.",
         [AuthPolicies.AlertOperators] = "Roles permitidos: Admin, Operator.",
-        [AuthPolicies.AlertApprovers] = "Roles permitidos: Admin, Analyst.",
+        [AuthPolicies.AlertCreators] = "Roles permitidos: Admin, Operator, Citizen.",
+        [AuthPolicies.AlertApprovers] = "Roles permitidos: Admin, Operator, Analyst.",
+        [AuthPolicies.CitizenConfirmers] = "Roles permitidos: Admin, Operator, Citizen.",
+        [AuthPolicies.ConfirmationReaders] = "Roles permitidos: Admin, Operator, Analyst.",
         [AuthPolicies.Dispatchers] = "Roles permitidos: Admin, Analyst, RulesEngine.",
-        [AuthPolicies.GeofenceReaders] = "Roles permitidos: Admin, Operator, Analyst, Auditor, RulesEngine.",
+        [AuthPolicies.GeofenceReaders] = "Roles permitidos: Admin, Operator, Analyst, Auditor, RulesEngine, Citizen.",
         [AuthPolicies.GeofenceManagers] = "Roles permitidos: Admin.",
         [AuthPolicies.UserAdministrators] = "Roles permitidos: Admin.",
         [AuthPolicies.AdminsOnly] = "Roles permitidos: Admin."
@@ -61,6 +68,7 @@ public sealed class ApiDocumentationOperationFilter : IOperationFilter
         var path = relativePath?.ToLowerInvariant() ?? string.Empty;
         if (path.Contains("/auth")) return "Authentication";
         if (path.Contains("/alerts")) return "Alerts";
+        if (path.Contains("/weather")) return "Weather";
         if (path.Contains("/geofences")) return "Geofences";
         if (path.Contains("/users")) return "Users";
         if (path.Contains("/metrics")) return "Observability";
@@ -121,7 +129,7 @@ public sealed class ApiDocumentationOperationFilter : IOperationFilter
     {
         foreach (var (statusCode, response) in operation.Responses)
         {
-            if (statusCode is not ("400" or "401" or "403" or "404" or "409" or "422" or "429" or "503"))
+            if (statusCode is not ("400" or "401" or "403" or "404" or "409" or "422" or "429" or "502" or "503"))
             {
                 continue;
             }
@@ -135,6 +143,7 @@ public sealed class ApiDocumentationOperationFilter : IOperationFilter
                 "409" => "Conflicto de concurrencia o estado del recurso.",
                 "422" => "Regla de negocio violada.",
                 "429" => "Se excedio el limite de solicitudes.",
+                "502" => "Error al consultar una dependencia externa.",
                 "503" => "Dependencia externa no disponible.",
                 _ => response.Description
             };
@@ -170,6 +179,7 @@ public sealed class ApiDocumentationOperationFilter : IOperationFilter
                 "409" => "Concurrency conflict",
                 "422" => "Business rule violation",
                 "429" => "Too Many Requests",
+                "502" => "Bad Gateway",
                 "503" => "External dependency unavailable",
                 _ => "Unexpected error"
             }),
@@ -182,6 +192,7 @@ public sealed class ApiDocumentationOperationFilter : IOperationFilter
                 "409" => "El recurso fue modificado por otro proceso. Recargue y reintente.",
                 "422" => "La transicion solicitada viola una regla del dominio.",
                 "429" => "Se excedio el limite de solicitudes permitido para este cliente.",
+                "502" => "No fue posible completar la consulta hacia una dependencia externa.",
                 "503" => "Una dependencia externa requerida no se encuentra disponible.",
                 _ => "Se produjo un error inesperado."
             }),

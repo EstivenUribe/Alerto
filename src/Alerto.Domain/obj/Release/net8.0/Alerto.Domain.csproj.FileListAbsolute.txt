@@ -9,3 +9,4 @@ C:\Users\cipap\Documents\Alerto\src\Alerto.Domain\obj\Release\net8.0\Alerto.Doma
 C:\Users\cipap\Documents\Alerto\src\Alerto.Domain\obj\Release\net8.0\refint\Alerto.Domain.dll
 C:\Users\cipap\Documents\Alerto\src\Alerto.Domain\obj\Release\net8.0\Alerto.Domain.pdb
 C:\Users\cipap\Documents\Alerto\src\Alerto.Domain\obj\Release\net8.0\ref\Alerto.Domain.dll
+C:\Users\cipap\Documents\Alerto\src\Alerto.Domain\obj\Release\net8.0\Alerto.Domain.sourcelink.json

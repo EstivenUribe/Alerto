@@ -2,6 +2,7 @@ using Alerto.Application.Common.Interfaces;
 using Alerto.Application.Common.Models;
 using Alerto.Application.Users;
 using Alerto.Domain.Entities;
+using Alerto.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace Alerto.Infrastructure.Persistence.Repositories;
@@ -52,6 +53,14 @@ public sealed class UserRepository : IUserRepository
         return _dbContext.Users
             .Include(x => x.RefreshTokens)
             .SingleOrDefaultAsync(user => user.RefreshTokens.Any(token => token.Token == refreshToken), cancellationToken);
+    }
+
+    public Task<User?> GetFirstAdminAsync(CancellationToken cancellationToken)
+    {
+        return _dbContext.Users
+            .Where(x => x.Role == UserRole.Admin && x.IsActive)
+            .OrderBy(x => x.CreatedAtUtc)
+            .FirstOrDefaultAsync(cancellationToken);
     }
 
     public async Task<PagedResponse<User>> SearchAsync(UserQueryRequest request, CancellationToken cancellationToken)

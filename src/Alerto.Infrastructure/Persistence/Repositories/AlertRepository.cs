@@ -24,13 +24,14 @@ public sealed class AlertRepository : IAlertRepository
     {
         return await _dbContext.Alerts
             .Include(x => x.Dispatches)
-            .SingleOrDefaultAsync(x => x.Id == id, cancellationToken);
+            .SingleOrDefaultAsync(x => x.Id == id && !x.IsDeleted, cancellationToken);
     }
 
     public async Task<PagedResponse<Alert>> SearchAsync(AlertQueryRequest request, CancellationToken cancellationToken)
     {
         var query = _dbContext.Alerts
             .Include(x => x.Dispatches)
+            .Where(alert => !alert.IsDeleted)
             .AsNoTracking()
             .AsQueryable();
 

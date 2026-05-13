@@ -44,3 +44,9 @@ public interface IAppCache
 
     Task RemoveAsync(string key, CancellationToken cancellationToken);
 }
+
+public interface IWeatherThresholdStore
+{
+    bool IsDemoMode { get; }
+    void SetMode(bool demoMode);
+}

@@ -1,6 +1,12 @@
 using Alerto.Application.Common.Models;
+using Alerto.Application.Weather;
 
 namespace Alerto.Application.Common.Interfaces;
+
+public interface IOpenMeteoClient
+{
+    Task<OpenMeteoForecastData> GetForecastAsync(decimal latitude, decimal longitude, CancellationToken cancellationToken);
+}
 
 public interface ISiataIntegrationClient
 {

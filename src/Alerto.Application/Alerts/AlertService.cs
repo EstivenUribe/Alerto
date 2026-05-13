@@ -3,6 +3,7 @@ using Alerto.Application.Common.Exceptions;
 using Alerto.Application.Common.Interfaces;
 using Alerto.Application.Common.Models;
 using Alerto.Domain.Entities;
+using Alerto.Domain.Enums;
 using Alerto.Domain.Exceptions;
 using AutoMapper;
 using FluentValidation;
@@ -16,6 +17,7 @@ public sealed class AlertService : IAlertService
 
     private readonly IAlertRepository _alertRepository;
     private readonly IAuditTrailRepository _auditTrailRepository;
+    private readonly IAlertCitizenConfirmationRepository _citizenConfirmationRepository;
     private readonly ICurrentUserService _currentUserService;
     private readonly IGeofenceRepository _geofenceRepository;
     private readonly IUnitOfWork _unitOfWork;
@@ -27,12 +29,15 @@ public sealed class AlertService : IAlertService
     private readonly IValidator<ApproveAlertRequest> _approveValidator;
     private readonly IValidator<RejectAlertRequest> _rejectValidator;
     private readonly IValidator<CancelAlertRequest> _cancelValidator;
+    private readonly IValidator<DeleteAlertRequest> _deleteValidator;
     private readonly IValidator<DispatchAlertRequest> _dispatchValidator;
     private readonly IValidator<AlertQueryRequest> _queryValidator;
+    private readonly IValidator<CitizenConfirmAlertRequest> _citizenConfirmValidator;
 
     public AlertService(
         IAlertRepository alertRepository,
         IAuditTrailRepository auditTrailRepository,
+        IAlertCitizenConfirmationRepository citizenConfirmationRepository,
         ICurrentUserService currentUserService,
         IGeofenceRepository geofenceRepository,
         IUnitOfWork unitOfWork,
@@ -44,11 +49,14 @@ public sealed class AlertService : IAlertService
         IValidator<ApproveAlertRequest> approveValidator,
         IValidator<RejectAlertRequest> rejectValidator,
         IValidator<CancelAlertRequest> cancelValidator,
+        IValidator<DeleteAlertRequest> deleteValidator,
         IValidator<DispatchAlertRequest> dispatchValidator,
-        IValidator<AlertQueryRequest> queryValidator)
+        IValidator<AlertQueryRequest> queryValidator,
+        IValidator<CitizenConfirmAlertRequest> citizenConfirmValidator)
     {
         _alertRepository = alertRepository;
         _auditTrailRepository = auditTrailRepository;
+        _citizenConfirmationRepository = citizenConfirmationRepository;
         _currentUserService = currentUserService;
         _geofenceRepository = geofenceRepository;
         _unitOfWork = unitOfWork;
@@ -60,8 +68,10 @@ public sealed class AlertService : IAlertService
         _approveValidator = approveValidator;
         _rejectValidator = rejectValidator;
         _cancelValidator = cancelValidator;
+        _deleteValidator = deleteValidator;
         _dispatchValidator = dispatchValidator;
         _queryValidator = queryValidator;
+        _citizenConfirmValidator = citizenConfirmValidator;
     }
 
     public async Task<AlertResponse> CreateAsync(CreateAlertRequest request, CancellationToken cancellationToken)
@@ -220,6 +230,51 @@ public sealed class AlertService : IAlertService
         return await MapAndCacheAsync(alert, cancellationToken);
     }
 
+    public async Task DeleteAsync(Guid id, DeleteAlertRequest request, CancellationToken cancellationToken)
+    {
+        await _deleteValidator.ValidateAndThrowAsync(request, cancellationToken);
+        var alert = await GetAlertOrThrowAsync(id, cancellationToken);
+        EnsureVersion(alert.Version, request.ExpectedVersion);
+
+        alert.DeleteAdministratively(GetRequiredActorId(), request.Reason, _clock.UtcNow);
+
+        await AppendAuditAsync(GetRequiredActorId(), "AlertDeletedAdministratively", alert.Id, request, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        await _cache.RemoveAsync(BuildAlertKey(alert.Id), cancellationToken);
+    }
+
+    public async Task<CitizenConfirmationResponse> CitizenConfirmAsync(Guid id, CitizenConfirmAlertRequest request, CancellationToken cancellationToken)
+    {
+        await _citizenConfirmValidator.ValidateAndThrowAsync(request, cancellationToken);
+        var alert = await GetAlertOrThrowAsync(id, cancellationToken);
+
+        if (alert.Status is not Domain.Enums.AlertStatus.Approved and not Domain.Enums.AlertStatus.Broadcasted)
+        {
+            throw new DomainRuleException("Solo se pueden confirmar alertas aprobadas o difundidas.");
+        }
+
+        var actorId = GetRequiredActorId();
+
+        if (await _citizenConfirmationRepository.ExistsAsync(id, actorId, cancellationToken))
+        {
+            throw new ConflictException("El usuario ya confirmó esta alerta.");
+        }
+
+        var confirmation = AlertCitizenConfirmation.Create(id, actorId, request.Notes ?? string.Empty, _clock.UtcNow);
+        await _citizenConfirmationRepository.AddAsync(confirmation, cancellationToken);
+        await AppendAuditAsync(actorId, "CitizenConfirmation", alert.Id, new { alertId = id, notes = request.Notes }, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return MapConfirmation(confirmation);
+    }
+
+    public async Task<CitizenConfirmationResponse[]> GetCitizenConfirmationsAsync(Guid id, CancellationToken cancellationToken)
+    {
+        await GetAlertOrThrowAsync(id, cancellationToken);
+        var confirmations = await _citizenConfirmationRepository.GetByAlertAsync(id, cancellationToken);
+        return confirmations.Select(MapConfirmation).ToArray();
+    }
+
     private Guid GetRequiredActorId()
     {
         if (!_currentUserService.IsAuthenticated || _currentUserService.UserId is null)
@@ -272,6 +327,9 @@ public sealed class AlertService : IAlertService
     }
 
     private static string BuildAlertKey(Guid id) => $"{AlertCachePrefix}{id}";
+
+    private static CitizenConfirmationResponse MapConfirmation(AlertCitizenConfirmation c) =>
+        new(c.Id, c.AlertId, c.ConfirmedByUserId, c.Notes, c.CreatedAtUtc);
 
     private static AlertResponse MapResponse(Alert alert)
     {

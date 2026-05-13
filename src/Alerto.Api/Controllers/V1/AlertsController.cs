@@ -62,7 +62,7 @@ public sealed class AlertsController : ControllerBase
     /// Operacion pensada para operadores del COE o integraciones internas que generan alertas iniciales antes de aprobacion manual.
     /// </remarks>
     [HttpPost]
-    [Authorize(Policy = AuthPolicies.AlertOperators)]
+    [Authorize(Policy = AuthPolicies.AlertCreators)]
     [ProducesResponseType(typeof(AlertResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
@@ -172,6 +172,31 @@ public sealed class AlertsController : ControllerBase
     }
 
     /// <summary>
+    /// Elimina administrativamente una alerta sin borrarla fisicamente de la base de datos.
+    /// </summary>
+    /// <remarks>
+    /// Operacion restringida a administradores. La alerta queda marcada como eliminada para no perder trazabilidad
+    /// de eventos generados por otros sistemas.
+    /// </remarks>
+    [HttpDelete("{id:guid}")]
+    [Authorize(Policy = AuthPolicies.AdminsOnly)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status422UnprocessableEntity)]
+    public async Task<IActionResult> Delete(
+        Guid id,
+        [FromBody] DeleteAlertRequest request,
+        CancellationToken cancellationToken)
+    {
+        await _alertService.DeleteAsync(id, request, cancellationToken);
+        return NoContent();
+    }
+
+    /// <summary>
     /// Registra la difusion de una alerta aprobada o previamente broadcasted.
     /// </summary>
     /// <remarks>
@@ -193,5 +218,50 @@ public sealed class AlertsController : ControllerBase
     {
         var alert = await _alertService.DispatchAsync(id, request, cancellationToken);
         return Ok(alert);
+    }
+
+    /// <summary>
+    /// Registra la confirmacion ciudadana de que una alerta corresponde a una situacion real.
+    /// </summary>
+    /// <remarks>
+    /// Disponible para ciudadanos y operadores. Solo permite una confirmacion por usuario por alerta.
+    /// La alerta debe estar Aprobada o Difundida para poder confirmarse.
+    /// </remarks>
+    [HttpPost("{id:guid}/citizen-confirm")]
+    [Authorize(Policy = AuthPolicies.CitizenConfirmers)]
+    [ProducesResponseType(typeof(CitizenConfirmationResponse), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status422UnprocessableEntity)]
+    public async Task<ActionResult<CitizenConfirmationResponse>> CitizenConfirm(
+        Guid id,
+        [FromBody] CitizenConfirmAlertRequest request,
+        CancellationToken cancellationToken)
+    {
+        var confirmation = await _alertService.CitizenConfirmAsync(id, request, cancellationToken);
+        return CreatedAtAction(nameof(GetById), new { id, version = "1" }, confirmation);
+    }
+
+    /// <summary>
+    /// Devuelve la lista de confirmaciones ciudadanas de una alerta.
+    /// </summary>
+    /// <remarks>
+    /// Disponible para Admin, Operadores y Analistas. Permite ver quien confirmo la alerta en campo.
+    /// </remarks>
+    [HttpGet("{id:guid}/citizen-confirmations")]
+    [Authorize(Policy = AuthPolicies.ConfirmationReaders)]
+    [ProducesResponseType(typeof(CitizenConfirmationResponse[]), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<CitizenConfirmationResponse[]>> GetCitizenConfirmations(
+        Guid id,
+        CancellationToken cancellationToken)
+    {
+        var confirmations = await _alertService.GetCitizenConfirmationsAsync(id, cancellationToken);
+        return Ok(confirmations);
     }
 }

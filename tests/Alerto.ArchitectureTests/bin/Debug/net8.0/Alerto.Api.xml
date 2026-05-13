@@ -65,6 +65,15 @@
             La cancelacion no elimina la alerta; conserva el historial y evita nuevas transiciones incompatibles.
             </remarks>
         </member>
+        <member name="M:Alerto.Api.Controllers.V1.AlertsController.Delete(System.Guid,Alerto.Application.Alerts.DeleteAlertRequest,System.Threading.CancellationToken)">
+            <summary>
+            Elimina administrativamente una alerta sin borrarla fisicamente de la base de datos.
+            </summary>
+            <remarks>
+            Operacion restringida a administradores. La alerta queda marcada como eliminada para no perder trazabilidad
+            de eventos generados por otros sistemas.
+            </remarks>
+        </member>
         <member name="M:Alerto.Api.Controllers.V1.AlertsController.Dispatch(System.Guid,Alerto.Application.Alerts.DispatchAlertRequest,System.Threading.CancellationToken)">
             <summary>
             Registra la difusion de una alerta aprobada o previamente broadcasted.
@@ -167,6 +176,28 @@
             <summary>
             Inactiva un usuario para retirar acceso operacional sin borrado fisico del registro.
             </summary>
+        </member>
+        <member name="M:Alerto.Api.Controllers.V1.WeatherController.GetDashboard(System.Decimal,System.Decimal,System.Threading.CancellationToken)">
+            <summary>
+            Obtiene el dashboard meteorológico actual para las coordenadas del usuario.
+            </summary>
+            <remarks>
+            Consulta Open-Meteo para las coordenadas indicadas. Los datos se cachean 5 minutos.
+            Si el nivel de riesgo es Alto o Crítico, se crea automáticamente una alerta en el sistema.
+            </remarks>
+            <param name="latitude">Latitud del usuario (entre -90 y 90).</param>
+            <param name="longitude">Longitud del usuario (entre -180 y 180).</param>
+            <param name="cancellationToken">Token de cancelación.</param>
+        </member>
+        <member name="M:Alerto.Api.Controllers.V1.WeatherController.GetHistory(System.Decimal,System.Decimal,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Threading.CancellationToken)">
+            <summary>
+            Consulta el historial de lecturas meteorológicas almacenadas para unas coordenadas.
+            </summary>
+            <param name="latitude">Latitud de referencia.</param>
+            <param name="longitude">Longitud de referencia.</param>
+            <param name="fromUtc">Inicio del rango (UTC). Por defecto: últimas 24 horas.</param>
+            <param name="toUtc">Fin del rango (UTC). Por defecto: ahora.</param>
+            <param name="cancellationToken">Token de cancelación.</param>
         </member>
     </members>
 </doc>

@@ -1,6 +1,7 @@
 using Alerto.Application.Alerts;
 using Alerto.Application.Geofences;
 using Alerto.Application.Users;
+using Alerto.Application.Weather;
 using Alerto.Domain.Entities;
 using Alerto.Application.Common.Models;
 
@@ -21,6 +22,7 @@ public interface IUserRepository
     Task<User?> GetByUsernameAsync(string username, CancellationToken cancellationToken);
     Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken);
     Task<User?> GetByRefreshTokenAsync(string refreshToken, CancellationToken cancellationToken);
+    Task<User?> GetFirstAdminAsync(CancellationToken cancellationToken);
     Task<PagedResponse<User>> SearchAsync(UserQueryRequest request, CancellationToken cancellationToken);
 }
 
@@ -30,12 +32,26 @@ public interface IGeofenceRepository
     Task<Geofence?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
     Task<Geofence?> GetByCodeAsync(string code, CancellationToken cancellationToken);
     Task<bool> ExistsActiveAsync(Guid id, CancellationToken cancellationToken);
+    Task<Geofence?> GetFirstActiveAsync(CancellationToken cancellationToken);
     Task<PagedResponse<Geofence>> SearchAsync(GeofenceQueryRequest request, CancellationToken cancellationToken);
 }
 
 public interface IAuditTrailRepository
 {
     Task AddAsync(AuditLog auditLog, CancellationToken cancellationToken);
+}
+
+public interface IWeatherRepository
+{
+    Task AddAsync(WeatherReading reading, CancellationToken cancellationToken);
+    Task<WeatherReading[]> GetHistoryAsync(decimal latitude, decimal longitude, DateTime fromUtc, DateTime toUtc, CancellationToken cancellationToken);
+}
+
+public interface IAlertCitizenConfirmationRepository
+{
+    Task AddAsync(AlertCitizenConfirmation confirmation, CancellationToken cancellationToken);
+    Task<bool> ExistsAsync(Guid alertId, Guid userId, CancellationToken cancellationToken);
+    Task<AlertCitizenConfirmation[]> GetByAlertAsync(Guid alertId, CancellationToken cancellationToken);
 }
 
 public interface IUnitOfWork

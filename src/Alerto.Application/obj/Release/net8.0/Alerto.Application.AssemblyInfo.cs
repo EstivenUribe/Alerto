@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Alerto.Application")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+89246aef5d39475de1e5bf65ee7d752e627ba8c0")]
 [assembly: System.Reflection.AssemblyProductAttribute("Alerto.Application")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Alerto.Application")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

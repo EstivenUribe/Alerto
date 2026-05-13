@@ -9,7 +9,10 @@ public static class AuthPolicies
 
     public const string AlertReaders = "AlertReaders";
     public const string AlertOperators = "AlertOperators";
+    public const string AlertCreators = "AlertCreators";
     public const string AlertApprovers = "AlertApprovers";
+    public const string CitizenConfirmers = "CitizenConfirmers";
+    public const string ConfirmationReaders = "ConfirmationReaders";
     public const string Dispatchers = "Dispatchers";
     public const string GeofenceReaders = "GeofenceReaders";
     public const string GeofenceManagers = "GeofenceManagers";

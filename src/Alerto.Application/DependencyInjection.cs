@@ -2,6 +2,7 @@ using Alerto.Application.Alerts;
 using Alerto.Application.Auth;
 using Alerto.Application.Geofences;
 using Alerto.Application.Users;
+using Alerto.Application.Weather;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -18,6 +19,7 @@ public static class DependencyInjection
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IGeofenceService, GeofenceService>();
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IWeatherService, WeatherService>();
 
         return services;
     }

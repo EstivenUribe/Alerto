@@ -1,6 +1,61 @@
 @Alerto.Api_HostAddress = http://localhost:5070
+@accessToken = paste-jwt-token-here
+@geofenceId = paste-geofence-id-here
+@alertId = paste-alert-id-here
+@alertVersion = 0
+@latitude = 6.244203
+@longitude = -75.581211
 
-GET {{Alerto.Api_HostAddress}}/weatherforecast/
+GET {{Alerto.Api_HostAddress}}/health/live
+Accept: application/json
+
+###
+
+POST {{Alerto.Api_HostAddress}}/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "AlertoAdmin123!"
+}
+
+###
+
+GET {{Alerto.Api_HostAddress}}/api/v1/alerts?pageNumber=1&pageSize=10
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+###
+
+GET {{Alerto.Api_HostAddress}}/api/v1/weather/dashboard?latitude={{latitude}}&longitude={{longitude}}
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+###
+
+POST {{Alerto.Api_HostAddress}}/api/v1/alerts/{{alertId}}/citizen-confirm
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "notes": "Confirmacion registrada desde cliente REST."
+}
+
+###
+
+DELETE {{Alerto.Api_HostAddress}}/api/v1/alerts/{{alertId}}
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "expectedVersion": {{alertVersion}},
+  "reason": "Retiro administrativo de prueba."
+}
+
+###
+
+GET {{Alerto.Api_HostAddress}}/api/v1/geofences/{{geofenceId}}
+Authorization: Bearer {{accessToken}}
 Accept: application/json
 
 ###

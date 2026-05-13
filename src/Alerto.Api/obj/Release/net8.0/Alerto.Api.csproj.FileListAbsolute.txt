@@ -147,3 +147,5 @@ C:\Users\cipap\Documents\Alerto\src\Alerto.Api\obj\Release\net8.0\Alerto.Api.xml
 C:\Users\cipap\Documents\Alerto\src\Alerto.Api\obj\Release\net8.0\Alerto.Api.pdb
 C:\Users\cipap\Documents\Alerto\src\Alerto.Api\obj\Release\net8.0\Alerto.Api.genruntimeconfig.cache
 C:\Users\cipap\Documents\Alerto\src\Alerto.Api\obj\Release\net8.0\ref\Alerto.Api.dll
+C:\Users\cipap\Documents\Alerto\src\Alerto.Api\bin\Release\net8.0\Alerto.Api.staticwebassets.runtime.json
+C:\Users\cipap\Documents\Alerto\src\Alerto.Api\obj\Release\net8.0\Alerto.Api.sourcelink.json

@@ -221,19 +221,32 @@ builder.Services.AddAuthorization(options =>
         policy.RequireRole("Admin", "Auditor"));
 
     options.AddPolicy(AuthPolicies.AlertReaders, policy =>
-        policy.RequireRole("Admin", "Operator", "Analyst", "Auditor", "RulesEngine"));
+        policy.RequireRole("Admin", "Operator", "Analyst", "Auditor", "RulesEngine", "Citizen"));
 
     options.AddPolicy(AuthPolicies.AlertOperators, policy =>
         policy.RequireRole("Admin", "Operator"));
 
+    // Ciudadanos pueden crear alertas (pendientes de revisión por operador)
+    options.AddPolicy(AuthPolicies.AlertCreators, policy =>
+        policy.RequireRole("Admin", "Operator", "Citizen"));
+
+    // Operator ahora puede aprobar/rechazar alertas además del Admin y Analyst
     options.AddPolicy(AuthPolicies.AlertApprovers, policy =>
-        policy.RequireRole("Admin", "Analyst"));
+        policy.RequireRole("Admin", "Operator", "Analyst"));
+
+    // Ciudadanos y operadores pueden registrar confirmaciones ciudadanas
+    options.AddPolicy(AuthPolicies.CitizenConfirmers, policy =>
+        policy.RequireRole("Admin", "Operator", "Citizen"));
+
+    // Solo Admin, Operator y Analyst pueden ver la lista de quienes confirmaron
+    options.AddPolicy(AuthPolicies.ConfirmationReaders, policy =>
+        policy.RequireRole("Admin", "Operator", "Analyst"));
 
     options.AddPolicy(AuthPolicies.Dispatchers, policy =>
         policy.RequireRole("Admin", "Analyst", "RulesEngine"));
 
     options.AddPolicy(AuthPolicies.GeofenceReaders, policy =>
-        policy.RequireRole("Admin", "Operator", "Analyst", "Auditor", "RulesEngine"));
+        policy.RequireRole("Admin", "Operator", "Analyst", "Auditor", "RulesEngine", "Citizen"));
 
     options.AddPolicy(AuthPolicies.GeofenceManagers, policy =>
         policy.RequireRole("Admin"));
@@ -323,6 +336,9 @@ app.UseSerilogRequestLogging(options =>
 app.UseMiddleware<CorrelationIdMiddleware>();
 app.UseMiddleware<RequestResponseLoggingMiddleware>();
 app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
+
+app.UseDefaultFiles();
+app.UseStaticFiles();
 
 if (app.Environment.IsDevelopment())
 {

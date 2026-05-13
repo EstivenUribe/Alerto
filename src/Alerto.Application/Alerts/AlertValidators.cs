@@ -57,6 +57,15 @@ public sealed class CancelAlertRequestValidator : AbstractValidator<CancelAlertR
     }
 }
 
+public sealed class DeleteAlertRequestValidator : AbstractValidator<DeleteAlertRequest>
+{
+    public DeleteAlertRequestValidator()
+    {
+        RuleFor(x => x.ExpectedVersion).GreaterThanOrEqualTo(0);
+        RuleFor(x => x.Reason).NotEmpty().MaximumLength(500);
+    }
+}
+
 public sealed class DispatchAlertRequestValidator : AbstractValidator<DispatchAlertRequest>
 {
     public DispatchAlertRequestValidator()
@@ -76,5 +85,15 @@ public sealed class AlertQueryRequestValidator : AbstractValidator<AlertQueryReq
         RuleFor(x => x)
             .Must(x => !x.CreatedFromUtc.HasValue || !x.CreatedToUtc.HasValue || x.CreatedFromUtc <= x.CreatedToUtc)
             .WithMessage("La fecha inicial debe ser menor o igual a la fecha final.");
+    }
+}
+
+public sealed class CitizenConfirmAlertRequestValidator : AbstractValidator<CitizenConfirmAlertRequest>
+{
+    public CitizenConfirmAlertRequestValidator()
+    {
+        RuleFor(x => x.Notes)
+            .MaximumLength(500)
+            .When(x => x.Notes is not null);
     }
 }

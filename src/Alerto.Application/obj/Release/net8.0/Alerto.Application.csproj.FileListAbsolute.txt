@@ -13,3 +13,4 @@ C:\Users\cipap\Documents\Alerto\src\Alerto.Application\obj\Release\net8.0\Alerto
 C:\Users\cipap\Documents\Alerto\src\Alerto.Application\obj\Release\net8.0\refint\Alerto.Application.dll
 C:\Users\cipap\Documents\Alerto\src\Alerto.Application\obj\Release\net8.0\Alerto.Application.pdb
 C:\Users\cipap\Documents\Alerto\src\Alerto.Application\obj\Release\net8.0\ref\Alerto.Application.dll
+C:\Users\cipap\Documents\Alerto\src\Alerto.Application\obj\Release\net8.0\Alerto.Application.sourcelink.json
