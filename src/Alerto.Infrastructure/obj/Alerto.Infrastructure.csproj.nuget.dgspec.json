@@ -4,14 +4,14 @@
     "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Infrastructure\\Alerto.Infrastructure.csproj": {}
   },
   "projects": {
-    "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Application\\Alerto.Application.csproj": {
+    "c:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Application\\Alerto.Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Application\\Alerto.Application.csproj",
+        "projectUniqueName": "c:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Application\\Alerto.Application.csproj",
         "projectName": "Alerto.Application",
-        "projectPath": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Application\\Alerto.Application.csproj",
+        "projectPath": "c:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Application\\Alerto.Application.csproj",
         "packagesPath": "C:\\Users\\cipap\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Application\\obj\\",
+        "outputPath": "c:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Application\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\cipap\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -26,8 +26,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Domain\\Alerto.Domain.csproj": {
-                "projectPath": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Domain\\Alerto.Domain.csproj"
+              "c:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Domain\\Alerto.Domain.csproj": {
+                "projectPath": "c:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Domain\\Alerto.Domain.csproj"
               }
             }
           }
@@ -76,14 +76,14 @@
         }
       }
     },
-    "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Domain\\Alerto.Domain.csproj": {
+    "c:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Domain\\Alerto.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Domain\\Alerto.Domain.csproj",
+        "projectUniqueName": "c:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Domain\\Alerto.Domain.csproj",
         "projectName": "Alerto.Domain",
-        "projectPath": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Domain\\Alerto.Domain.csproj",
+        "projectPath": "c:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Domain\\Alerto.Domain.csproj",
         "packagesPath": "C:\\Users\\cipap\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Domain\\obj\\",
+        "outputPath": "c:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Domain\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\cipap\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -156,11 +156,11 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Application\\Alerto.Application.csproj": {
-                "projectPath": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Application\\Alerto.Application.csproj"
+              "c:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Application\\Alerto.Application.csproj": {
+                "projectPath": "c:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Application\\Alerto.Application.csproj"
               },
-              "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Domain\\Alerto.Domain.csproj": {
-                "projectPath": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Domain\\Alerto.Domain.csproj"
+              "c:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Domain\\Alerto.Domain.csproj": {
+                "projectPath": "c:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Domain\\Alerto.Domain.csproj"
               }
             }
           }

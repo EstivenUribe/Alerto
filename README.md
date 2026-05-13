@@ -1,19 +1,19 @@
 # Alerto Management API
 
-API RESTful versionada en .NET 8 para la gestion de alertas civiles
-georreferenciadas en Medellin. El proyecto combina autenticacion JWT,
+API RESTful versionada en .NET 8 para la gestión de alertas civiles
+georreferenciadas en Medellín. El proyecto combina autenticación JWT,
 persistencia real en PostgreSQL, cache con Redis, CRUD completo, interfaz web
-basica, consulta meteorologica con Open-Meteo y confirmaciones ciudadanas.
+básica, consulta meteorológica con Open-Meteo y confirmaciones ciudadanas.
 
-## Informacion academica
+## Información académica
 
 | Campo | Detalle |
 |---|---|
-| Institucion | Politecnico Colombiano Jaime Isaza Cadavid |
-| Facultad | Facultad de Ingenieria |
-| Programa | Ingenieria Informatica |
-| Asignatura | Computacion Orientada a Servicios |
-| Docente | Andres Felipe Gonzalez Orozco |
+| Institución | Politécnico Colombiano Jaime Isaza Cadavid |
+| Facultad | Facultad de Ingeniería |
+| Programa | Ingeniería Informática |
+| Asignatura | Computación Orientada a Servicios |
+| Docente | Andrés Felipe González Orozco |
 | Estudiantes | Federico Bayer Cuartas - Rafael Estiven Uribe Alvarez |
 | Repositorio | https://github.com/EstivenUribe/Alerto |
 
@@ -22,19 +22,19 @@ basica, consulta meteorologica con Open-Meteo y confirmaciones ciudadanas.
 Alerto resuelve una necesidad real de alertamiento temprano: registrar,
 validar, aprobar, difundir y consultar alertas civiles sin perder trazabilidad.
 La API no expone solo tablas; expone capacidades de negocio para operadores,
-administradores, analistas, auditores, ciudadanos y clientes maquina a maquina.
+administradores, analistas, auditores, ciudadanos y clientes máquina a máquina.
 
 Procesos soportados:
 
-- Registro y consulta de alertas por zona geografica.
-- Reporte ciudadano de nuevas alertas pendientes de revision.
-- Aprobacion, rechazo, cancelacion y difusion de alertas.
-- Borrado administrativo logico de alertas, sin destruir registros historicos.
-- Confirmacion ciudadana de alertas aprobadas o difundidas.
-- Consulta meteorologica por coordenadas con persistencia de lecturas.
-- Creacion automatica de alertas cuando el riesgo por lluvia es alto o critico.
-- Administracion de usuarios, roles y geocercas.
-- Auditoria de acciones criticas.
+- Registro y consulta de alertas por zona geográfica.
+- Reporte ciudadano de nuevas alertas pendientes de revisión.
+- Aprobación, rechazo, cancelación y difusión de alertas.
+- Borrado administrativo lógico de alertas, sin destruir registros históricos.
+- Confirmación ciudadana de alertas aprobadas o difundidas.
+- Consulta meteorológica por coordenadas con persistencia de lecturas.
+- Creación automática de alertas cuando el riesgo por lluvia es alto o crítico.
+- Administración de usuarios, roles y geocercas.
+- Auditoría de acciones críticas.
 
 ## Principios SOA aplicados
 
@@ -42,8 +42,8 @@ Procesos soportados:
 - Interoperabilidad: HTTP, JSON, JWT Bearer, ProblemDetails y Swagger/OpenAPI.
 - Desacoplamiento: Clean Architecture con puertos e implementaciones separadas.
 - Stateless: cada request se valida mediante token JWT.
-- Reutilizacion: la misma API sirve a la interfaz web, Postman y clientes M2M.
-- Gobernanza: logs, health checks, rate limiting, auditoria y manual tecnico.
+- Reutilización: la misma API sirve a la interfaz web, Postman y clientes M2M.
+- Gobernanza: logs, health checks, rate limiting, auditoría y manual técnico.
 
 ## Arquitectura
 
@@ -74,7 +74,7 @@ flowchart TB
 ```text
 Alerto.sln
 src/
-  Alerto.Api/              API HTTP, Swagger, seguridad, frontend estatico
+  Alerto.Api/              API HTTP, Swagger, seguridad, frontend estático
   Alerto.Application/      Casos de uso, DTOs, validadores, puertos
   Alerto.Domain/           Entidades, enums, value objects, reglas
   Alerto.Infrastructure/   EF Core, PostgreSQL, Redis, JWT, Open-Meteo
@@ -87,26 +87,26 @@ CheckPoint 3. 28.04.26.md
 docker-compose.yml
 ```
 
-## Tecnologias
+## Tecnologías
 
-| Tecnologia | Uso |
+| Tecnología | Uso |
 |---|---|
 | .NET 8 / ASP.NET Core | API HTTP, DI, middlewares, seguridad |
 | Entity Framework Core 8 | ORM, migraciones y concurrencia optimista |
 | PostgreSQL 16 | Base de datos relacional principal |
 | Redis 7 | Cache, locks e idempotencia |
-| JWT Bearer | Autenticacion stateless |
-| Refresh tokens | Renovacion controlada de sesiones |
+| JWT Bearer | Autenticación stateless |
+| Refresh tokens | Renovación controlada de sesiones |
 | TOTP | Segundo factor para usuarios administrativos |
-| FluentValidation | Validacion de requests |
+| FluentValidation | Validación de requests |
 | AutoMapper | Mapeo entre entidades y DTOs |
 | Serilog | Logging estructurado |
 | Polly | Resiliencia para clientes HTTP externos |
-| Open-Meteo | Datos meteorologicos reales |
-| HTML, CSS y JavaScript | Interfaz basica conectada a la API |
+| Open-Meteo | Datos meteorológicos reales |
+| HTML, CSS y JavaScript | Interfaz básica conectada a la API |
 | Leaflet | Mapas en la interfaz web |
-| Assets institucionales | Logo Alerto e imagen de Facultad de Ingenieria en login y pie de pagina |
-| xUnit | Pruebas de dominio, arquitectura e integracion |
+| Assets institucionales | Logo Alerto e imagen de Facultad de Ingeniería en login y pie de página |
+| xUnit | Pruebas de dominio, arquitectura e integración |
 | Docker Compose | PostgreSQL y Redis en desarrollo |
 
 ## Requisitos previos
@@ -118,7 +118,7 @@ docker-compose.yml
 - Navegador web
 - Postman, Thunder Client o cliente HTTP equivalente
 
-## Ejecucion local
+## Ejecución local
 
 1. Levantar dependencias:
 
@@ -151,12 +151,12 @@ http://localhost:5070/
 http://localhost:5070/swagger
 ```
 
-La URL exacta puede variar segun el perfil de ejecucion mostrado por la
+La URL exacta puede variar según el perfil de ejecución mostrado por la
 consola.
 
-## Configuracion principal
+## Configuración principal
 
-La configuracion base esta en `src/Alerto.Api/appsettings.json` y puede
+La configuración base está en `src/Alerto.Api/appsettings.json` y puede
 sobrescribirse con variables de entorno.
 
 ```bash
@@ -176,16 +176,16 @@ Integrations__OpenMeteo__BaseUrl=https://api.open-meteo.com/
 ## Base de datos y migraciones
 
 Al iniciar, la API aplica migraciones pendientes mediante `AlertoDbInitializer`.
-Tambien verifica y crea datos demo cuando hacen falta:
+También verifica y crea datos demo cuando hacen falta:
 
 - usuario administrador `admin`;
 - usuario operador `operador`;
 - usuario ciudadano `ciudadano`;
 - geocerca de referencia;
-- esquema `alerto` con tablas de usuarios, alertas, geocercas, auditoria,
-  refresh tokens, outbox, lecturas meteorologicas y confirmaciones ciudadanas.
+- esquema `alerto` con tablas de usuarios, alertas, geocercas, auditoría,
+  refresh tokens, outbox, lecturas meteorológicas y confirmaciones ciudadanas.
 
-Comandos utiles:
+Comandos útiles:
 
 ```bash
 dotnet ef migrations add NombreMigracion --project src/Alerto.Infrastructure --startup-project src/Alerto.Api
@@ -213,16 +213,16 @@ clientSecret: rules-engine-secret
 
 | Rol | Permisos principales |
 |---|---|
-| Admin | Gestion total, usuarios, geocercas y borrado administrativo de alertas |
+| Admin | Gestión total, usuarios, geocercas y borrado administrativo de alertas |
 | Operator | Crear, actualizar, aprobar, rechazar, cancelar y confirmar alertas |
 | Analyst | Aprobar, rechazar, cancelar, difundir y consultar confirmaciones |
-| Auditor | Consultar informacion operativa |
+| Auditor | Consultar información operativa |
 | Citizen | Consultar alertas/geocercas/clima, crear reportes y confirmar alertas activas |
-| RulesEngine | Cliente M2M para lectura y difusion permitida |
+| RulesEngine | Cliente M2M para lectura y difusión permitida |
 
 ## Endpoints principales
 
-### Autenticacion
+### Autenticación
 
 - `POST /api/v1/auth/login`
 - `POST /api/v1/auth/verify-2fa`
@@ -246,7 +246,7 @@ clientSecret: rules-engine-secret
 - `POST /api/v1/alerts/{id}/citizen-confirm`
 - `GET /api/v1/alerts/{id}/citizen-confirmations`
 
-### Meteorologia
+### Meteorología
 
 - `GET /api/v1/weather/dashboard?latitude={lat}&longitude={lon}`
 - `GET /api/v1/weather/history?latitude={lat}&longitude={lon}&fromUtc={from}&toUtc={to}`
@@ -280,18 +280,18 @@ clientSecret: rules-engine-secret
 - Toda alerta nace en estado `Pending`.
 - `Admin`, `Operator` y `Citizen` pueden crear alertas.
 - Solo alertas `Pending` pueden aprobarse o rechazarse.
-- La aprobacion vence a los 3 minutos desde la creacion.
+- La aprobación vence a los 3 minutos desde la creación.
 - `Admin`, `Analyst` y `RulesEngine` pueden difundir alertas.
 - Solo alertas `Approved` o `Broadcasted` pueden difundirse.
-- Solo alertas `Approved` o `Broadcasted` pueden recibir confirmacion ciudadana.
+- Solo alertas `Approved` o `Broadcasted` pueden recibir confirmación ciudadana.
 - Cada usuario puede confirmar una misma alerta una sola vez.
 - Solo `Admin` puede eliminar administrativamente una alerta.
-- La eliminacion de alertas es logica: se marca `IsDeleted`, no se borra la fila.
-- Usuarios y geocercas se activan o inactivan; no se eliminan fisicamente.
+- La eliminación de alertas es lógica: se marca `IsDeleted`, no se borra la fila.
+- Usuarios y geocercas se activan o inactivan; no se eliminan físicamente.
 - Las lecturas de clima se persisten en base de datos.
-- Riesgo meteorologico `High` o `Critical` puede generar una alerta automatica.
+- Riesgo meteorológico `High` o `Critical` puede generar una alerta automática.
 - Se usa concurrencia optimista mediante `Version`.
-- Las acciones criticas generan auditoria.
+- Las acciones críticas generan auditoría.
 
 ## Ejemplos HTTP
 
@@ -315,11 +315,11 @@ Authorization: Bearer {token}
 Content-Type: application/json
 
 {
-  "title": "Creciente subita rio Medellin",
-  "description": "Se detecta aumento acelerado del caudal con riesgo para sectores riberenos.",
+  "title": "Creciente súbita río Medellín",
+  "description": "Se detecta aumento acelerado del caudal con riesgo para sectores ribereños.",
   "severity": "Critical",
   "sourceSystem": "Tablero COE",
-  "address": "Av. Regional con Calle 30, Medellin",
+  "address": "Av. Regional con Calle 30, Medellín",
   "latitude": 6.230145,
   "longitude": -75.573921,
   "geofenceId": "{geofenceId}"
@@ -335,7 +335,7 @@ Content-Type: application/json
 
 {
   "expectedVersion": 0,
-  "reason": "Registro retirado por validacion administrativa."
+  "reason": "Registro retirado por validación administrativa."
 }
 ```
 
@@ -347,7 +347,7 @@ Authorization: Bearer {token}
 Content-Type: application/json
 
 {
-  "notes": "La situacion fue confirmada en campo."
+  "notes": "La situación fue confirmada en campo."
 }
 ```
 
@@ -361,21 +361,21 @@ Accept: application/json
 
 ## Interfaz web
 
-La interfaz esta servida por la misma API desde `src/Alerto.Api/wwwroot`.
+La interfaz está servida por la misma API desde `src/Alerto.Api/wwwroot`.
 Permite:
 
-- iniciar sesion;
+- iniciar sesión;
 - usar accesos demo para `admin`, `operador` y `ciudadano`;
-- visualizar el logo de Alerto en login y aplicacion;
-- mostrar pie institucional con imagen de Facultad de Ingenieria, docente,
+- visualizar el logo de Alerto en login y aplicación;
+- mostrar pie institucional con imagen de Facultad de Ingeniería, docente,
   desarrolladores y GitHub;
 - consultar y crear alertas;
 - reportar alertas ciudadanas;
-- aprobar, rechazar, cancelar, confirmar o eliminar segun el rol;
+- aprobar, rechazar, cancelar, confirmar o eliminar según el rol;
 - consultar clima por coordenadas;
 - visualizar ubicaciones en mapa;
 
-## Pruebas y validacion
+## Pruebas y validación
 
 Ejecutar todas las pruebas:
 
@@ -391,37 +391,37 @@ dotnet test tests/Alerto.ArchitectureTests/Alerto.ArchitectureTests.csproj
 dotnet test tests/Alerto.IntegrationTests/Alerto.IntegrationTests.csproj
 ```
 
-La coleccion importable de Postman esta en:
+La colección importable de Postman está en:
 
 ```text
 Coleccion de Postman.postman_collection.json
 ```
 
 Ese archivo se importa directamente desde Postman e incluye login, endpoints
-protegidos, CRUD de alertas, borrado logico, confirmaciones ciudadanas, clima,
+protegidos, CRUD de alertas, borrado lógico, confirmaciones ciudadanas, clima,
 usuarios, geocercas, observabilidad, refresh token y logout.
 
 ## Flujo 2FA
 
-El segundo factor esta implementado con TOTP:
+El segundo factor está implementado con TOTP:
 
-1. Iniciar sesion normalmente.
+1. Iniciar sesión normalmente.
 2. Ejecutar `POST /api/v1/auth/2fa/setup` con Bearer token.
 3. Registrar el `secret` o `provisioningUri` en una app autenticadora.
-4. Ejecutar `POST /api/v1/auth/2fa/enable` con el codigo de 6 digitos.
+4. Ejecutar `POST /api/v1/auth/2fa/enable` con el código de 6 dígitos.
 5. En el siguiente login, si `requiresTwoFactor` es `true`, ejecutar
-   `POST /api/v1/auth/verify-2fa` con `twoFactorToken` y el codigo vigente.
+   `POST /api/v1/auth/verify-2fa` con `twoFactorToken` y el código vigente.
 
-## Documentacion del checkpoint
+## Documentación del checkpoint
 
-El manual tecnico esta en:
+El manual técnico está en:
 
 ```text
 CheckPoint 3. 28.04.26.md
 ```
 
 Incluye contexto funcional, arquitectura, modelo de datos, contrato de API,
-seguridad, pruebas, manejo de errores y conclusiones tecnicas.
+seguridad, pruebas, manejo de errores y conclusiones técnicas.
 
 ## Manejo de errores
 
@@ -435,19 +435,19 @@ Ejemplo:
   "type": "about:blank",
   "title": "Unauthorized",
   "status": 401,
-  "detail": "Se requiere un Bearer token valido para acceder al recurso.",
+  "detail": "Se requiere un Bearer token válido para acceder al recurso.",
   "instance": "/api/v1/alerts",
   "traceId": "0HN..."
 }
 ```
 
-Codigos usados: `200`, `201`, `204`, `400`, `401`, `403`, `404`, `409`,
+Códigos usados: `200`, `201`, `204`, `400`, `401`, `403`, `404`, `409`,
 `422`, `429`, `500` y `502`.
 
 ## Posibles mejoras futuras
 
 - Ampliar evidencias de pruebas con capturas o reportes.
-- Agregar mas pruebas de integracion para clima y confirmaciones ciudadanas.
+- Agregar más pruebas de integración para clima y confirmaciones ciudadanas.
 - Incorporar OpenTelemetry.
 - Integrar proveedores institucionales reales adicionales.
-- Usar PostGIS para consultas geoespaciales mas avanzadas.
+- Usar PostGIS para consultas geoespaciales más avanzadas.

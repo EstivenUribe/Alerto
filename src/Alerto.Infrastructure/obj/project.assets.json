@@ -2727,11 +2727,11 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Application\\Alerto.Application.csproj": {
-              "projectPath": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Application\\Alerto.Application.csproj"
+            "c:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Application\\Alerto.Application.csproj": {
+              "projectPath": "c:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Application\\Alerto.Application.csproj"
             },
-            "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Domain\\Alerto.Domain.csproj": {
-              "projectPath": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Domain\\Alerto.Domain.csproj"
+            "c:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Domain\\Alerto.Domain.csproj": {
+              "projectPath": "c:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Domain\\Alerto.Domain.csproj"
             }
           }
         }

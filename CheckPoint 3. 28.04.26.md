@@ -1,36 +1,36 @@
 # CheckPoint 3. 28.04.26
 
-# Manual Tecnico - Alerto Management API
+# Manual Técnico - Alerto Management API
 
-## 1. Introduccion
+## 1. Introducción
 
 Alerto Management API es una API RESTful versionada desarrollada en .NET 8
-para administrar alertas civiles georreferenciadas. La solucion fue disenada
-como un servicio orientado a capacidades de negocio: creacion de alertas,
-validacion operativa, aprobacion, difusion, consulta meteorologica,
-confirmaciones ciudadanas, administracion de geocercas, gestion de usuarios,
-autenticacion y auditoria.
+para administrar alertas civiles georreferenciadas. La solución fue diseñada
+como un servicio orientado a capacidades de negocio: creación de alertas,
+validación operativa, aprobación, difusión, consulta meteorológica,
+confirmaciones ciudadanas, administración de geocercas, gestión de usuarios,
+autenticación y auditoría.
 
 ## 2. Contexto funcional
 
 ### 2.1 Necesidad que soluciona
 
-En escenarios de emergencia, una organizacion necesita registrar alertas,
-asociarlas a zonas geograficas, validar su informacion, aprobarlas y difundirlas
+En escenarios de emergencia, una organización necesita registrar alertas,
+asociarlas a zonas geográficas, validar su información, aprobarlas y difundirlas
 sin perder trazabilidad. Alerto centraliza ese proceso mediante una API segura
 que puede ser consumida por operadores humanos, ciudadanos y por otros sistemas.
-Tambien permite consultar informacion meteorologica real para apoyar la
-deteccion temprana de riesgos por precipitacion.
+También permite consultar información meteorológica real para apoyar la
+detección temprana de riesgos por precipitación.
 
 ### 2.2 Usuarios que consumen la API
 
-- Administrador: gestiona usuarios, geocercas y eliminacion administrativa.
+- Administrador: gestiona usuarios, geocercas y eliminación administrativa.
 - Operador: crea, actualiza, aprueba, rechaza, cancela y confirma alertas.
 - Analista: aprueba, rechaza, cancela, difunde alertas y consulta confirmaciones.
-- Auditor: consulta informacion operativa.
+- Auditor: consulta información operativa.
 - Ciudadano: consulta alertas, geocercas y clima; reporta alertas pendientes y
   confirma alertas activas desde campo.
-- Rules Engine: cliente maquina a maquina para integraciones.
+- Rules Engine: cliente máquina a máquina para integraciones.
 
 ### 2.3 Proceso de negocio soportado
 
@@ -42,14 +42,14 @@ deteccion temprana de riesgos por precipitacion.
 4. Una alerta aprobada puede difundirse por canales externos por roles
    autorizados.
 5. Un ciudadano u operador puede confirmar que la alerta corresponde a una
-   situacion real.
-6. El modulo meteorologico consulta Open-Meteo, guarda lecturas y puede crear
-   alertas automaticas cuando el riesgo es alto o critico.
-7. Todas las acciones criticas quedan auditadas.
-8. Las alertas no se eliminan fisicamente; si un administrador las retira,
-   quedan marcadas con borrado logico.
+   situación real.
+6. El módulo meteorológico consulta Open-Meteo, guarda lecturas y puede crear
+   alertas automáticas cuando el riesgo es alto o crítico.
+7. Todas las acciones críticas quedan auditadas.
+8. Las alertas no se eliminan físicamente; si un administrador las retira,
+   quedan marcadas con borrado lógico.
 
-## 3. Arquitectura de la solucion
+## 3. Arquitectura de la solución
 
 ### 3.1 Diagrama en capas
 
@@ -75,46 +75,46 @@ flowchart TB
     Infra --> OpenMeteo
 ```
 
-### 3.2 Separacion de responsabilidades
+### 3.2 Separación de responsabilidades
 
-- `Alerto.Api`: expone el contrato HTTP, versionamiento, autenticacion,
-  autorizacion, Swagger, archivos estaticos de la interfaz y manejo global de
+- `Alerto.Api`: expone el contrato HTTP, versionamiento, autenticación,
+  autorización, Swagger, archivos estáticos de la interfaz y manejo global de
   errores.
 - `Alerto.Application`: implementa casos de uso, validaciones, DTOs y puertos
   para persistencia, cache, JWT e integraciones.
 - `Alerto.Domain`: concentra reglas de negocio e invariantes de alertas,
-  usuarios, geocercas, lecturas climaticas, confirmaciones ciudadanas y tokens.
+  usuarios, geocercas, lecturas climáticas, confirmaciones ciudadanas y tokens.
 - `Alerto.Infrastructure`: implementa repositorios, EF Core, PostgreSQL,
-  Redis, generacion JWT, TOTP, cliente Open-Meteo y outbox.
+  Redis, generación JWT, TOTP, cliente Open-Meteo y outbox.
 
 ### 3.3 Principios SOA aplicados
 
 - Desacoplamiento: los casos de uso dependen de interfaces, no de detalles de
   infraestructura.
-- Contrato explicito: la API expone rutas versionadas y documentacion Swagger.
+- Contrato explícito: la API expone rutas versionadas y documentación Swagger.
 - Stateless: cada request se autentica con JWT; el servidor no depende de
-  sesion en memoria.
-- Reutilizacion: el mismo servicio atiende frontend, Postman y clientes M2M.
+  sesión en memoria.
+- Reutilización: el mismo servicio atiende frontend, Postman y clientes M2M.
 - Interoperabilidad: HTTP, JSON, JWT Bearer y ProblemDetails.
-- Gobernanza: versionamiento, auditoria, health checks, logs y rate limiting.
+- Gobernanza: versionamiento, auditoría, health checks, logs y rate limiting.
 
 ### 3.4 Interfaz de captura
 
-La interfaz basica se sirve desde `src/Alerto.Api/wwwroot` por la misma API. Es
-una aplicacion HTML, CSS y JavaScript conectada directamente a los endpoints
+La interfaz básica se sirve desde `src/Alerto.Api/wwwroot` por la misma API. Es
+una aplicación HTML, CSS y JavaScript conectada directamente a los endpoints
 versionados. Incluye:
 
 - login con usuarios demo `admin`, `operador` y `ciudadano`;
-- logo de Alerto en el login y en la aplicacion;
-- pie institucional con imagen de Facultad de Ingenieria, docente,
+- logo de Alerto en el login y en la aplicación;
+- pie institucional con imagen de Facultad de Ingeniería, docente,
   desarrolladores y enlace GitHub;
 - paneles por rol para alertas, reportes ciudadanos, geocercas, usuarios, clima
   y confirmaciones;
-- mapas con Leaflet y consulta meteorologica con Open-Meteo.
+- mapas con Leaflet y consulta meteorológica con Open-Meteo.
 
 ## 4. Modelo de datos
 
-### 4.1 Diagrama Entidad-Relacion
+### 4.1 Diagrama Entidad-Relación
 
 ```mermaid
 erDiagram
@@ -218,37 +218,37 @@ erDiagram
 
 ### 4.2 Diccionario de datos
 
-| Tabla | Proposito |
+| Tabla | Propósito |
 |---|---|
 | `alerts` | Registro principal de alertas civiles. |
-| `alert_dispatches` | Evidencia de difusion por canal o proveedor. |
+| `alert_dispatches` | Evidencia de difusión por canal o proveedor. |
 | `alert_citizen_confirmations` | Confirmaciones ciudadanas asociadas a una alerta. |
-| `geofences` | Zonas geograficas operativas. |
-| `weather_readings` | Lecturas meteorologicas consultadas y persistidas. |
+| `geofences` | Zonas geográficas operativas. |
+| `weather_readings` | Lecturas meteorológicas consultadas y persistidas. |
 | `users` | Usuarios humanos con roles y credenciales. |
-| `refresh_tokens` | Tokens persistidos para renovacion de sesiones. |
-| `audit_trails` | Auditoria de acciones criticas. |
+| `refresh_tokens` | Tokens persistidos para renovación de sesiones. |
+| `audit_trails` | Auditoría de acciones críticas. |
 | `outbox_messages` | Mensajes pendientes para integraciones/eventos. |
 
-Campos criticos:
+Campos críticos:
 
-| Campo | Tabla | Descripcion |
+| Campo | Tabla | Descripción |
 |---|---|---|
 | `Version` | varias | Control de concurrencia optimista. |
 | `Status` | `alerts` | Estado de negocio: Pending, Approved, Rejected, Broadcasted, Cancelled. |
-| `IsDeleted` | `alerts` | Borrado logico administrativo; no elimina fisicamente. |
-| `DeletionReason` | `alerts` | Justificacion del retiro administrativo. |
-| `RiskLevel` | `weather_readings` | Nivel calculado de riesgo por precipitacion: Low, Moderate, High, Critical. |
-| `AutoAlertId` | `weather_readings` | Alerta creada automaticamente cuando el riesgo amerita accion. |
-| `ConfirmedByUserId` | `alert_citizen_confirmations` | Usuario que confirma la existencia de la situacion en campo. |
-| `Role` | `users` | Base de autorizacion por politicas. |
-| `DetailsJson` | `audit_trails` | Detalle estructurado de la accion auditada. |
+| `IsDeleted` | `alerts` | Borrado lógico administrativo; no elimina físicamente. |
+| `DeletionReason` | `alerts` | Justificación del retiro administrativo. |
+| `RiskLevel` | `weather_readings` | Nivel calculado de riesgo por precipitación: Low, Moderate, High, Critical. |
+| `AutoAlertId` | `weather_readings` | Alerta creada automáticamente cuando el riesgo amerita acción. |
+| `ConfirmedByUserId` | `alert_citizen_confirmations` | Usuario que confirma la existencia de la situación en campo. |
+| `Role` | `users` | Base de autorización por políticas. |
+| `DetailsJson` | `audit_trails` | Detalle estructurado de la acción auditada. |
 
-## 5. Diseno del servicio
+## 5. Diseño del servicio
 
 Todas las rutas funcionales principales usan versionamiento `/api/v1/`.
 
-### 5.1 Autenticacion
+### 5.1 Autenticación
 
 #### POST `/api/v1/auth/login`
 
@@ -280,7 +280,7 @@ Respuesta `200 OK`:
 }
 ```
 
-Codigos: `200`, `400`, `401`, `429`.
+Códigos: `200`, `400`, `401`, `429`.
 
 #### POST `/api/v1/auth/m2m/token`
 
@@ -293,7 +293,7 @@ Body:
 }
 ```
 
-Codigos: `200`, `400`, `401`, `429`.
+Códigos: `200`, `400`, `401`, `429`.
 
 ### 5.2 Alertas
 
@@ -308,46 +308,46 @@ Authorization: Bearer {token}
 Query opcional: `status`, `geofenceId`, `severity`, `createdFromUtc`,
 `createdToUtc`, `pageNumber`, `pageSize`.
 
-Codigos: `200`, `400`, `401`, `403`.
+Códigos: `200`, `400`, `401`, `403`.
 
 #### GET `/api/v1/alerts/{id}`
 
 Consulta una alerta por identificador.
 
-Codigos: `200`, `401`, `403`, `404`.
+Códigos: `200`, `401`, `403`, `404`.
 
 #### POST `/api/v1/alerts`
 
 Crea una alerta en estado `Pending`. Puede ser usada por `Admin`, `Operator` y
-`Citizen`; en la interfaz ciudadana funciona como reporte pendiente de revision.
+`Citizen`; en la interfaz ciudadana funciona como reporte pendiente de revisión.
 
 Body:
 
 ```json
 {
-  "title": "Creciente subita rio Medellin",
+  "title": "Creciente súbita río Medellín",
   "description": "Se detecta aumento acelerado del caudal.",
   "severity": "Critical",
   "sourceSystem": "Tablero COE",
-  "address": "Av. Regional con Calle 30, Medellin",
+  "address": "Av. Regional con Calle 30, Medellín",
   "latitude": 6.230145,
   "longitude": -75.573921,
   "geofenceId": "11111111-1111-1111-1111-111111111111"
 }
 ```
 
-Codigos: `201`, `400`, `401`, `403`, `404`.
+Códigos: `201`, `400`, `401`, `403`, `404`.
 
 #### PUT `/api/v1/alerts/{id}`
 
 Actualiza una alerta pendiente usando concurrencia optimista.
 
-Codigos: `200`, `400`, `401`, `403`, `404`, `409`.
+Códigos: `200`, `400`, `401`, `403`, `404`, `409`.
 
 #### DELETE `/api/v1/alerts/{id}`
 
 Elimina administrativamente una alerta. Solo puede ejecutarlo un usuario con
-rol `Admin`. La API no hace borrado fisico: marca `IsDeleted = true`, conserva
+rol `Admin`. La API no hace borrado físico: marca `IsDeleted = true`, conserva
 la fila y la oculta de consultas normales.
 
 Headers:
@@ -362,13 +362,13 @@ Body:
 ```json
 {
   "expectedVersion": 0,
-  "reason": "Registro retirado por validacion administrativa."
+  "reason": "Registro retirado por validación administrativa."
 }
 ```
 
 Respuesta esperada: `204 No Content`.
 
-Codigos: `204`, `400`, `401`, `403`, `404`, `409`, `422`.
+Códigos: `204`, `400`, `401`, `403`, `404`, `409`, `422`.
 
 #### POST `/api/v1/alerts/{id}/approve`
 
@@ -382,7 +382,7 @@ Body:
 }
 ```
 
-Codigos: `200`, `400`, `401`, `403`, `404`, `409`, `422`.
+Códigos: `200`, `400`, `401`, `403`, `404`, `409`, `422`.
 
 #### POST `/api/v1/alerts/{id}/reject`
 
@@ -393,23 +393,23 @@ Body:
 ```json
 {
   "expectedVersion": 0,
-  "reason": "Informacion insuficiente."
+  "reason": "Información insuficiente."
 }
 ```
 
-Codigos: `200`, `400`, `401`, `403`, `404`, `409`, `422`.
+Códigos: `200`, `400`, `401`, `403`, `404`, `409`, `422`.
 
 #### POST `/api/v1/alerts/{id}/dispatch`
 
-Registra la difusion de una alerta aprobada. Disponible para `Admin`, `Analyst`
+Registra la difusión de una alerta aprobada. Disponible para `Admin`, `Analyst`
 y `RulesEngine`.
 
-Codigos: `200`, `400`, `401`, `403`, `404`, `409`, `422`.
+Códigos: `200`, `400`, `401`, `403`, `404`, `409`, `422`.
 
 #### POST `/api/v1/alerts/{id}/citizen-confirm`
 
 Registra que un ciudadano u operador confirma una alerta aprobada o difundida.
-Solo se permite una confirmacion por usuario y alerta.
+Solo se permite una confirmación por usuario y alerta.
 
 Headers:
 
@@ -438,22 +438,22 @@ Respuesta `201 Created`:
 }
 ```
 
-Codigos: `201`, `400`, `401`, `403`, `404`, `409`, `422`.
+Códigos: `201`, `400`, `401`, `403`, `404`, `409`, `422`.
 
 #### GET `/api/v1/alerts/{id}/citizen-confirmations`
 
 Consulta las confirmaciones ciudadanas registradas para una alerta. Disponible
 para `Admin`, `Operator` y `Analyst`.
 
-Codigos: `200`, `401`, `403`, `404`.
+Códigos: `200`, `401`, `403`, `404`.
 
-### 5.3 Meteorologia
+### 5.3 Meteorología
 
 #### GET `/api/v1/weather/dashboard`
 
 Consulta Open-Meteo para las coordenadas enviadas, persiste la lectura en base
 de datos y devuelve el resumen de riesgo. Si el riesgo calculado es `High` o
-`Critical`, el servicio puede crear una alerta automatica asociada a la lectura.
+`Critical`, el servicio puede crear una alerta automática asociada a la lectura.
 
 Headers:
 
@@ -486,12 +486,12 @@ Respuesta `200 OK`:
 }
 ```
 
-Codigos: `200`, `400`, `401`, `403`, `502`.
+Códigos: `200`, `400`, `401`, `403`, `502`.
 
 #### GET `/api/v1/weather/history`
 
-Consulta lecturas meteorologicas persistidas para unas coordenadas y un rango
-UTC. Si no se envian fechas, usa las ultimas 24 horas.
+Consulta lecturas meteorológicas persistidas para unas coordenadas y un rango
+UTC. Si no se envían fechas, usa las últimas 24 horas.
 
 Query opcional:
 
@@ -499,13 +499,13 @@ Query opcional:
 latitude=6.244203&longitude=-75.581211&fromUtc=2026-05-12T00:00:00Z&toUtc=2026-05-13T00:00:00Z
 ```
 
-Codigos: `200`, `400`, `401`, `403`.
+Códigos: `200`, `400`, `401`, `403`.
 
 ### 5.4 Geocercas
 
 Endpoints principales:
 
-| Metodo | URL | Proposito |
+| Método | URL | Propósito |
 |---|---|---|
 | GET | `/api/v1/geofences` | Listar geocercas. |
 | GET | `/api/v1/geofences/{id}` | Consultar detalle. |
@@ -518,7 +518,7 @@ Endpoints principales:
 
 Endpoints principales:
 
-| Metodo | URL | Proposito |
+| Método | URL | Propósito |
 |---|---|---|
 | GET | `/api/v1/users` | Listar usuarios. |
 | GET | `/api/v1/users/{id}` | Consultar detalle. |
@@ -531,27 +531,27 @@ Endpoints principales:
 
 ### 6.1 Flujo JWT
 
-1. El cliente envia credenciales a `/api/v1/auth/login`.
+1. El cliente envía credenciales a `/api/v1/auth/login`.
 2. La API valida usuario, password y estado.
 3. Si el usuario no requiere 2FA, emite `accessToken` y `refreshToken`.
-4. El cliente envia el token en `Authorization: Bearer {token}`.
-5. Los endpoints protegidos validan firma, issuer, audience, expiracion y rol.
+4. El cliente envía el token en `Authorization: Bearer {token}`.
+5. Los endpoints protegidos validan firma, issuer, audience, expiración y rol.
 
 ### 6.2 Endpoints protegidos
 
 - Alertas: lectura por `Admin`, `Operator`, `Analyst`, `Auditor`,
   `RulesEngine` y `Citizen`.
-- Creacion de alertas: `Admin`, `Operator` y `Citizen`.
-- Actualizacion de alertas: `Admin` y `Operator`.
-- Aprobacion, rechazo y cancelacion: `Admin`, `Operator` y `Analyst`.
-- Difusion: `Admin`, `Analyst` y `RulesEngine`.
-- Eliminacion administrativa de alertas: solo `Admin`.
+- Creación de alertas: `Admin`, `Operator` y `Citizen`.
+- Actualización de alertas: `Admin` y `Operator`.
+- Aprobación, rechazo y cancelación: `Admin`, `Operator` y `Analyst`.
+- Difusión: `Admin`, `Analyst` y `RulesEngine`.
+- Eliminación administrativa de alertas: solo `Admin`.
 - Confirmaciones ciudadanas: registro por `Admin`, `Operator` y `Citizen`;
   lectura de confirmaciones por `Admin`, `Operator` y `Analyst`.
-- Meteorologia: consulta protegida por los mismos roles con permiso de lectura
+- Meteorología: consulta protegida por los mismos roles con permiso de lectura
   de alertas.
-- Geocercas: administracion solo `Admin`.
-- Usuarios: administracion solo `Admin`.
+- Geocercas: administración solo `Admin`.
+- Usuarios: administración solo `Admin`.
 
 ### 6.3 Header obligatorio
 
@@ -562,7 +562,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI...
 ### 6.4 Usuarios demo
 
 El inicializador de base de datos crea o verifica usuarios demo para facilitar
-la validacion funcional desde interfaz y Postman:
+la validación funcional desde interfaz y Postman:
 
 | Rol | Usuario | Password |
 |---|---|---|
@@ -570,7 +570,7 @@ la validacion funcional desde interfaz y Postman:
 | Operator | `operador` | `Alerto2026!` |
 | Citizen | `ciudadano` | `Alerto2026!` |
 
-## 7. Implementacion tecnica
+## 7. Implementación técnica
 
 ### 7.1 Estructura del proyecto
 
@@ -588,30 +588,30 @@ tests/
 docker-compose.yml
 ```
 
-### 7.2 Tecnologias utilizadas
+### 7.2 Tecnologías utilizadas
 
-| Tecnologia | Justificacion |
+| Tecnología | Justificación |
 |---|---|
 | .NET 8 | Plataforma LTS para APIs HTTP. |
 | ASP.NET Core | Routing, controllers, DI, middlewares y seguridad. |
 | EF Core | ORM y migraciones para PostgreSQL. |
 | PostgreSQL | Persistencia relacional robusta. |
 | Redis | Cache, idempotencia y soporte de procesos distribuidos. |
-| JWT Bearer | Autenticacion stateless. |
-| TOTP | Segundo factor con codigos temporales para usuarios que lo habiliten. |
-| FluentValidation | Validacion declarativa de requests. |
-| Swagger/OpenAPI | Documentacion interactiva del contrato. |
-| xUnit | Pruebas unitarias, de arquitectura e integracion. |
-| Open-Meteo | Fuente externa de datos meteorologicos para riesgo por precipitacion. |
-| HTML, CSS y JavaScript | Interfaz basica conectada directamente a la API. |
-| Leaflet | Visualizacion de coordenadas y contexto geografico en la interfaz. |
-| Assets institucionales | Logo Alerto e imagen de Facultad de Ingenieria en login y pie de pagina. |
+| JWT Bearer | Autenticación stateless. |
+| TOTP | Segundo factor con códigos temporales para usuarios que lo habiliten. |
+| FluentValidation | Validación declarativa de requests. |
+| Swagger/OpenAPI | Documentación interactiva del contrato. |
+| xUnit | Pruebas unitarias, de arquitectura e integración. |
+| Open-Meteo | Fuente externa de datos meteorológicos para riesgo por precipitación. |
+| HTML, CSS y JavaScript | Interfaz básica conectada directamente a la API. |
+| Leaflet | Visualización de coordenadas y contexto geográfico en la interfaz. |
+| Assets institucionales | Logo Alerto e imagen de Facultad de Ingeniería en login y pie de página. |
 
 ## 8. Pruebas
 
 ### 8.1 Evidencia Postman
 
-El archivo `Coleccion de Postman.postman_collection.json` contiene la coleccion
+El archivo `Coleccion de Postman.postman_collection.json` contiene la colección
 importable para probar:
 
 - Login.
@@ -625,8 +625,8 @@ importable para probar:
 - Difundir alerta.
 - Confirmar alerta como ciudadano u operador.
 - Consultar confirmaciones ciudadanas.
-- Consultar dashboard meteorologico.
-- Consultar historial meteorologico.
+- Consultar dashboard meteorológico.
+- Consultar historial meteorológico.
 - Eliminar administrativamente alerta.
 - Refresh token.
 - Logout.
@@ -635,10 +635,10 @@ importable para probar:
 
 | Caso | Resultado esperado |
 |---|---|
-| Login valido | `200 OK` con JWT. |
+| Login válido | `200 OK` con JWT. |
 | GET protegido sin token | `401 Unauthorized`. |
 | Crear alerta con token Admin/Operator/Citizen | `201 Created`. |
-| Actualizar con version incorrecta | `409 Conflict`. |
+| Actualizar con versión incorrecta | `409 Conflict`. |
 | Aprobar alerta con Operator | `200 OK`. |
 | Difundir alerta con Operator | `403 Forbidden`. |
 | Difundir alerta con Analyst o RulesEngine | `200 OK`. |
@@ -649,8 +649,8 @@ importable para probar:
 | Confirmar dos veces con el mismo usuario | `409 Conflict`. |
 | Confirmar con notas mayores a 500 caracteres | `400 Bad Request`. |
 | Consultar confirmaciones con Analyst | `200 OK`. |
-| Consultar dashboard meteorologico | `200 OK` y lectura persistida. |
-| Consultar historial con rango invalido | `400 Bad Request`. |
+| Consultar dashboard meteorológico | `200 OK` y lectura persistida. |
+| Consultar historial con rango inválido | `400 Bad Request`. |
 
 ## 9. Manejo de errores
 
@@ -664,13 +664,13 @@ Ejemplo:
   "type": "about:blank",
   "title": "Unauthorized",
   "status": 401,
-  "detail": "Se requiere un Bearer token valido para acceder al recurso.",
+  "detail": "Se requiere un Bearer token válido para acceder al recurso.",
   "instance": "/api/v1/alerts",
   "traceId": "0HN..."
 }
 ```
 
-Codigos contemplados:
+Códigos contemplados:
 
 - `200 OK`
 - `201 Created`
@@ -687,21 +687,21 @@ Codigos contemplados:
 
 ## 10. Swagger / OpenAPI
 
-Swagger esta configurado en ambiente `Development`. Al ejecutar la API puede
+Swagger está configurado en ambiente `Development`. Al ejecutar la API puede
 consultarse en:
 
 ```text
 http://localhost:5070/swagger
 ```
 
-## 11. Conclusiones tecnicas
+## 11. Conclusiones técnicas
 
 Alerto cumple con el enfoque de servicios porque expone capacidades funcionales
 de negocio mediante contratos HTTP versionados, seguridad JWT, persistencia real
-y separacion clara de responsabilidades. El borrado de alertas se implementa
-como eliminacion administrativa logica para proteger la trazabilidad de eventos
+y separación clara de responsabilidades. El borrado de alertas se implementa
+como eliminación administrativa lógica para proteger la trazabilidad de eventos
 generados por otros sistemas, manteniendo cumplimiento CRUD sin destruir datos
-historicos. La ampliacion meteorologica y las confirmaciones ciudadanas
+históricos. La ampliación meteorológica y las confirmaciones ciudadanas
 fortalecen el contexto funcional porque conectan la API con datos externos y
-validacion en campo. La interfaz web y los usuarios demo permiten evidenciar
-la conexion cliente-servidor sin depender unicamente de Postman.
+validación en campo. La interfaz web y los usuarios demo permiten evidenciar
+la conexión cliente-servidor sin depender únicamente de Postman.

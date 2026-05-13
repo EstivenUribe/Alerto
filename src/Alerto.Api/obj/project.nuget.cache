@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "XNomkmYhvtc=",
+  "dgSpecHash": "vA+SDKPkk+Y=",
   "success": true,
-  "projectFilePath": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Api\\Alerto.Api.csproj",
+  "projectFilePath": "c:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Api\\Alerto.Api.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\cipap\\.nuget\\packages\\asp.versioning.abstractions\\8.1.0\\asp.versioning.abstractions.8.1.0.nupkg.sha512",
     "C:\\Users\\cipap\\.nuget\\packages\\asp.versioning.http\\8.1.0\\asp.versioning.http.8.1.0.nupkg.sha512",
