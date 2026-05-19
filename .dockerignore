@@ -1,0 +1,11 @@
+**/bin/
+**/obj/
+**/.vs/
+**/.vscode/
+.git/
+.gitignore
+alerto-ui.out.log
+alerto-ui.err.log
+tests/
+*.user
+*.suo

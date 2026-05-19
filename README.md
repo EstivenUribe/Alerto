@@ -93,7 +93,7 @@ docker-compose.yml
 |---|---|
 | .NET 8 / ASP.NET Core | API HTTP, DI, middlewares, seguridad |
 | Entity Framework Core 8 | ORM, migraciones y concurrencia optimista |
-| PostgreSQL 16 | Base de datos relacional principal |
+| PostgreSQL 15 | Base de datos relacional principal en desarrollo local |
 | Redis 7 | Cache, locks e idempotencia |
 | JWT Bearer | Autenticación stateless |
 | Refresh tokens | Renovación controlada de sesiones |
@@ -107,7 +107,7 @@ docker-compose.yml
 | Leaflet | Mapas en la interfaz web |
 | Assets institucionales | Logo Alerto e imagen de Facultad de Ingeniería en login y pie de página |
 | xUnit | Pruebas de dominio, arquitectura e integración |
-| Docker Compose | PostgreSQL y Redis en desarrollo |
+| Docker Compose | Construye y levanta API, PostgreSQL 15 y Redis 7 para desarrollo |
 
 ## Requisitos previos
 
@@ -115,29 +115,46 @@ docker-compose.yml
 - Docker Desktop o motor Docker compatible
 - Puerto `5433` disponible para PostgreSQL
 - Puerto `6379` disponible para Redis
+- Puerto `5070` disponible para la API HTTP
 - Navegador web
 - Postman, Thunder Client o cliente HTTP equivalente
 
-## Ejecución local
+## Ejecución local con Docker
 
-1. Levantar dependencias:
+Modo recomendado para evitar servicios sueltos en la máquina:
 
-```bash
-docker compose up -d
-```
+- `api`: backend ASP.NET Core, Swagger y frontend estático (`wwwroot`).
+- `postgres`: PostgreSQL 15 en `localhost:5433`.
+- `redis`: Redis 7 en `localhost:6379`.
 
-2. Restaurar y compilar:
+El frontend y Swagger no son procesos independientes; ambos se sirven desde el
+backend `api`. Por eso, cuando se tumba el contenedor `api`, también dejan de
+responder `http://localhost:5070/` y `http://localhost:5070/swagger`.
 
-```bash
-dotnet restore Alerto.sln
-dotnet build Alerto.sln
-```
-
-3. Ejecutar la API:
+1. Construir y levantar todo el proyecto:
 
 ```bash
-dotnet run --project src/Alerto.Api/Alerto.Api.csproj --launch-profile http
+docker compose up -d --build
 ```
+
+2. Verificar contenedores:
+
+```bash
+docker compose ps
+```
+
+El resultado esperado debe mostrar `api`, `postgres` y `redis`. PostgreSQL y
+Redis deben aparecer como `healthy`; la API debe aparecer como `Up`.
+
+3. Ver logs de arranque si algo no responde:
+
+```bash
+docker compose logs -f api
+```
+
+Durante el arranque la API aplica migraciones pendientes y verifica los datos
+semilla mediante `AlertoDbInitializer`. No es necesario ejecutar
+`dotnet ef database update` manualmente para el flujo normal de desarrollo.
 
 4. Abrir la interfaz web:
 
@@ -151,13 +168,85 @@ http://localhost:5070/
 http://localhost:5070/swagger
 ```
 
-La URL exacta puede variar según el perfil de ejecución mostrado por la
-consola.
+6. Verificar salud de la API:
+
+```text
+http://localhost:5070/health/live
+```
+
+## Parar el proyecto
+
+Para detener todos los servicios sin borrar datos:
+
+```bash
+docker compose stop
+```
+
+Para apagar y remover todos los contenedores sin borrar los volúmenes de datos:
+
+```bash
+docker compose down
+```
+
+Con `docker compose down` dejan de responder:
+
+- frontend: `http://localhost:5070/`
+- Swagger: `http://localhost:5070/swagger`
+- backend/API: `http://localhost:5070`
+- PostgreSQL local del proyecto: `localhost:5433`
+- Redis local del proyecto: `localhost:6379`
+
+Para borrar también la base de datos local y empezar desde cero:
+
+```bash
+docker compose down -v
+```
+
+Usar `docker compose down -v` con cuidado: elimina los volúmenes locales de
+PostgreSQL y Redis. En el siguiente `docker compose up -d`, Docker crea una base
+nueva y la API vuelve a aplicar migraciones y datos semilla al iniciar.
+
+## Notas sobre PostgreSQL local
+
+El archivo `docker-compose.yml` usa `postgres:15-alpine` y el volumen
+`postgres_data_v15`. Esto evita mezclar datos inicializados con otra versión
+mayor de PostgreSQL.
+
+Si se cambia manualmente la versión de PostgreSQL en Docker, es posible ver
+errores como `database files are incompatible with server`. En ese caso, no se
+debe reutilizar el mismo volumen con otra versión mayor; se debe crear un
+volumen nuevo o borrar el volumen local si no se necesitan sus datos.
+
+## Ejecución manual sin Docker para la API
+
+También es posible levantar solo PostgreSQL y Redis con Docker, y ejecutar la
+API con `dotnet run` desde la máquina:
+
+```bash
+docker compose up -d postgres redis
+dotnet run --project src/Alerto.Api/Alerto.Api.csproj --launch-profile http
+```
+
+En este modo, `docker compose down` solo detiene PostgreSQL y Redis. La API,
+Swagger y el frontend seguirán activos hasta cerrar la terminal de `dotnet run`
+con `Ctrl+C` o detener ese proceso manualmente. Para evitar esa confusión, usar
+preferiblemente `docker compose up -d --build`.
 
 ## Configuración principal
 
 La configuración base está en `src/Alerto.Api/appsettings.json` y puede
 sobrescribirse con variables de entorno.
+
+Cuando la API corre dentro de Docker Compose, `docker-compose.yml` sobrescribe
+las conexiones para usar los nombres internos de servicio:
+
+```bash
+ConnectionStrings__AlertoDb=Host=postgres;Port=5432;Database=alerto_db;Username=postgres;Password=postgres
+ConnectionStrings__Redis=redis:6379,abortConnect=false
+```
+
+Cuando la API corre manualmente con `dotnet run` desde la máquina, se usan los
+puertos publicados en localhost:
 
 ```bash
 ASPNETCORE_ENVIRONMENT=Development
