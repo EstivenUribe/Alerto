@@ -1,23 +1,23 @@
 {
   "Files": [
     {
-      "Id": "c:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Api\\wwwroot\\app.js",
+      "Id": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Api\\wwwroot\\app.js",
       "PackagePath": "staticwebassets\\app.js"
     },
     {
-      "Id": "c:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Api\\wwwroot\\assets\\alerto-logo.png",
+      "Id": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Api\\wwwroot\\assets\\alerto-logo.png",
       "PackagePath": "staticwebassets\\assets\\alerto-logo.png"
     },
     {
-      "Id": "c:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Api\\wwwroot\\assets\\facultad-ingenieria.png",
+      "Id": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Api\\wwwroot\\assets\\facultad-ingenieria.png",
       "PackagePath": "staticwebassets\\assets\\facultad-ingenieria.png"
     },
     {
-      "Id": "c:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Api\\wwwroot\\index.html",
+      "Id": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Api\\wwwroot\\index.html",
       "PackagePath": "staticwebassets\\index.html"
     },
     {
-      "Id": "c:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Api\\wwwroot\\styles.css",
+      "Id": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Api\\wwwroot\\styles.css",
       "PackagePath": "staticwebassets\\styles.css"
     },
     {

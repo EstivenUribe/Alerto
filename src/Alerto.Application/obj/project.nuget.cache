@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "gu/7AEex2cY=",
+  "dgSpecHash": "Is0QDsCWbkM=",
   "success": true,
-  "projectFilePath": "c:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Application\\Alerto.Application.csproj",
+  "projectFilePath": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Application\\Alerto.Application.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\cipap\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\cipap\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",

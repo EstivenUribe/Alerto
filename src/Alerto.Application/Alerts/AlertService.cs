@@ -7,13 +7,13 @@ using Alerto.Domain.Enums;
 using Alerto.Domain.Exceptions;
 using AutoMapper;
 using FluentValidation;
+using Microsoft.Extensions.Options;
 
 namespace Alerto.Application.Alerts;
 
 public sealed class AlertService : IAlertService
 {
     private const string AlertCachePrefix = "alerts:";
-    private static readonly TimeSpan AlertCacheTtl = TimeSpan.FromMinutes(5);
 
     private readonly IAlertRepository _alertRepository;
     private readonly IAuditTrailRepository _auditTrailRepository;
@@ -24,15 +24,8 @@ public sealed class AlertService : IAlertService
     private readonly IClock _clock;
     private readonly IAppCache _cache;
     private readonly IMapper _mapper;
-    private readonly IValidator<CreateAlertRequest> _createValidator;
-    private readonly IValidator<UpdateAlertRequest> _updateValidator;
-    private readonly IValidator<ApproveAlertRequest> _approveValidator;
-    private readonly IValidator<RejectAlertRequest> _rejectValidator;
-    private readonly IValidator<CancelAlertRequest> _cancelValidator;
-    private readonly IValidator<DeleteAlertRequest> _deleteValidator;
-    private readonly IValidator<DispatchAlertRequest> _dispatchValidator;
-    private readonly IValidator<AlertQueryRequest> _queryValidator;
-    private readonly IValidator<CitizenConfirmAlertRequest> _citizenConfirmValidator;
+    private readonly AlertServiceValidators _validators;
+    private readonly AlertOptions _options;
 
     public AlertService(
         IAlertRepository alertRepository,
@@ -44,15 +37,8 @@ public sealed class AlertService : IAlertService
         IClock clock,
         IAppCache cache,
         IMapper mapper,
-        IValidator<CreateAlertRequest> createValidator,
-        IValidator<UpdateAlertRequest> updateValidator,
-        IValidator<ApproveAlertRequest> approveValidator,
-        IValidator<RejectAlertRequest> rejectValidator,
-        IValidator<CancelAlertRequest> cancelValidator,
-        IValidator<DeleteAlertRequest> deleteValidator,
-        IValidator<DispatchAlertRequest> dispatchValidator,
-        IValidator<AlertQueryRequest> queryValidator,
-        IValidator<CitizenConfirmAlertRequest> citizenConfirmValidator)
+        AlertServiceValidators validators,
+        IOptions<AlertOptions> options)
     {
         _alertRepository = alertRepository;
         _auditTrailRepository = auditTrailRepository;
@@ -63,20 +49,13 @@ public sealed class AlertService : IAlertService
         _clock = clock;
         _cache = cache;
         _mapper = mapper;
-        _createValidator = createValidator;
-        _updateValidator = updateValidator;
-        _approveValidator = approveValidator;
-        _rejectValidator = rejectValidator;
-        _cancelValidator = cancelValidator;
-        _deleteValidator = deleteValidator;
-        _dispatchValidator = dispatchValidator;
-        _queryValidator = queryValidator;
-        _citizenConfirmValidator = citizenConfirmValidator;
+        _validators = validators;
+        _options = options.Value;
     }
 
     public async Task<AlertResponse> CreateAsync(CreateAlertRequest request, CancellationToken cancellationToken)
     {
-        await _createValidator.ValidateAndThrowAsync(request, cancellationToken);
+        await _validators.Create.ValidateAndThrowAsync(request, cancellationToken);
         var actorId = GetRequiredActorId();
 
         if (!await _geofenceRepository.ExistsActiveAsync(request.GeofenceId, cancellationToken))
@@ -94,7 +73,8 @@ public sealed class AlertService : IAlertService
             request.Longitude,
             request.GeofenceId,
             actorId,
-            _clock.UtcNow);
+            _clock.UtcNow,
+            _options.ApprovalTimeoutMinutes);
 
         await _alertRepository.AddAsync(alert, cancellationToken);
         await AppendAuditAsync(actorId, "AlertCreated", alert.Id, request, cancellationToken);
@@ -105,7 +85,7 @@ public sealed class AlertService : IAlertService
 
     public async Task<AlertResponse> UpdateAsync(Guid id, UpdateAlertRequest request, CancellationToken cancellationToken)
     {
-        await _updateValidator.ValidateAndThrowAsync(request, cancellationToken);
+        await _validators.Update.ValidateAndThrowAsync(request, cancellationToken);
         var alert = await GetAlertOrThrowAsync(id, cancellationToken);
         EnsureVersion(alert.Version, request.ExpectedVersion);
 
@@ -146,7 +126,7 @@ public sealed class AlertService : IAlertService
 
     public async Task<AlertListResponse> SearchAsync(AlertQueryRequest request, CancellationToken cancellationToken)
     {
-        await _queryValidator.ValidateAndThrowAsync(request, cancellationToken);
+        await _validators.Query.ValidateAndThrowAsync(request, cancellationToken);
 
         var page = await _alertRepository.SearchAsync(request, cancellationToken);
         return new AlertListResponse(
@@ -161,7 +141,7 @@ public sealed class AlertService : IAlertService
 
     public async Task<AlertResponse> ApproveAsync(Guid id, ApproveAlertRequest request, CancellationToken cancellationToken)
     {
-        await _approveValidator.ValidateAndThrowAsync(request, cancellationToken);
+        await _validators.Approve.ValidateAndThrowAsync(request, cancellationToken);
         var alert = await GetAlertOrThrowAsync(id, cancellationToken);
         EnsureVersion(alert.Version, request.ExpectedVersion);
 
@@ -180,7 +160,7 @@ public sealed class AlertService : IAlertService
 
     public async Task<AlertResponse> RejectAsync(Guid id, RejectAlertRequest request, CancellationToken cancellationToken)
     {
-        await _rejectValidator.ValidateAndThrowAsync(request, cancellationToken);
+        await _validators.Reject.ValidateAndThrowAsync(request, cancellationToken);
         var alert = await GetAlertOrThrowAsync(id, cancellationToken);
         EnsureVersion(alert.Version, request.ExpectedVersion);
 
@@ -199,7 +179,7 @@ public sealed class AlertService : IAlertService
 
     public async Task<AlertResponse> CancelAsync(Guid id, CancelAlertRequest request, CancellationToken cancellationToken)
     {
-        await _cancelValidator.ValidateAndThrowAsync(request, cancellationToken);
+        await _validators.Cancel.ValidateAndThrowAsync(request, cancellationToken);
         var alert = await GetAlertOrThrowAsync(id, cancellationToken);
         EnsureVersion(alert.Version, request.ExpectedVersion);
 
@@ -213,7 +193,7 @@ public sealed class AlertService : IAlertService
 
     public async Task<AlertResponse> DispatchAsync(Guid id, DispatchAlertRequest request, CancellationToken cancellationToken)
     {
-        await _dispatchValidator.ValidateAndThrowAsync(request, cancellationToken);
+        await _validators.Dispatch.ValidateAndThrowAsync(request, cancellationToken);
         var alert = await GetAlertOrThrowAsync(id, cancellationToken);
         EnsureVersion(alert.Version, request.ExpectedVersion);
 
@@ -232,7 +212,7 @@ public sealed class AlertService : IAlertService
 
     public async Task DeleteAsync(Guid id, DeleteAlertRequest request, CancellationToken cancellationToken)
     {
-        await _deleteValidator.ValidateAndThrowAsync(request, cancellationToken);
+        await _validators.Delete.ValidateAndThrowAsync(request, cancellationToken);
         var alert = await GetAlertOrThrowAsync(id, cancellationToken);
         EnsureVersion(alert.Version, request.ExpectedVersion);
 
@@ -245,7 +225,7 @@ public sealed class AlertService : IAlertService
 
     public async Task<CitizenConfirmationResponse> CitizenConfirmAsync(Guid id, CitizenConfirmAlertRequest request, CancellationToken cancellationToken)
     {
-        await _citizenConfirmValidator.ValidateAndThrowAsync(request, cancellationToken);
+        await _validators.CitizenConfirm.ValidateAndThrowAsync(request, cancellationToken);
         var alert = await GetAlertOrThrowAsync(id, cancellationToken);
 
         if (alert.Status is not Domain.Enums.AlertStatus.Approved and not Domain.Enums.AlertStatus.Broadcasted)
@@ -322,7 +302,7 @@ public sealed class AlertService : IAlertService
     {
         var response = MapResponse(alert);
 
-        await _cache.SetAsync(BuildAlertKey(alert.Id), response, AlertCacheTtl, cancellationToken);
+        await _cache.SetAsync(BuildAlertKey(alert.Id), response, TimeSpan.FromMinutes(_options.CacheTtlMinutes), cancellationToken);
         return response;
     }
 

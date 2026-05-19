@@ -46,6 +46,10 @@ public sealed class AlertoDbContext : DbContext
             builder.Property(x => x.DeletionReason).HasMaxLength(500);
             builder.Property(x => x.Version).IsConcurrencyToken();
             builder.HasIndex(x => x.IsDeleted);
+            builder.HasIndex(x => x.Status);
+            builder.HasIndex(x => x.GeofenceId);
+            builder.HasIndex(x => x.CreatedByUserId);
+            builder.HasIndex(x => x.CreatedAtUtc);
             builder.HasMany(x => x.Dispatches)
                 .WithOne()
                 .HasForeignKey(x => x.AlertId)
@@ -71,6 +75,8 @@ public sealed class AlertoDbContext : DbContext
             builder.Property(x => x.TraceId).HasMaxLength(100).IsRequired();
             builder.Property(x => x.DetailsJson).HasColumnType("jsonb");
             builder.Property(x => x.Version).IsConcurrencyToken();
+            builder.HasIndex(x => x.EntityId);
+            builder.HasIndex(x => x.ActorId);
         });
 
         modelBuilder.Entity<Geofence>(builder =>

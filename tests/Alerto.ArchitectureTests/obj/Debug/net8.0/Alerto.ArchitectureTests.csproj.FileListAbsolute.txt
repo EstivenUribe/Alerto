@@ -164,3 +164,4 @@ C:\Users\cipap\Documents\Alerto\tests\Alerto.ArchitectureTests\obj\Debug\net8.0\
 C:\Users\cipap\Documents\Alerto\tests\Alerto.ArchitectureTests\bin\Debug\net8.0\Polly.dll
 C:\Users\cipap\Documents\Alerto\tests\Alerto.ArchitectureTests\bin\Debug\net8.0\appsettings.Production.json
 C:\Users\cipap\Documents\Alerto\tests\Alerto.ArchitectureTests\obj\Debug\net8.0\Alerto.ArchitectureTests.sourcelink.json
+C:\Users\cipap\Documents\Alerto\tests\Alerto.ArchitectureTests\bin\Debug\net8.0\Alerto.Api.staticwebassets.runtime.json

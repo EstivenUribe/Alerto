@@ -1,3 +1,4 @@
+using Alerto.Application.Alerts;
 using Alerto.Application.Common.Interfaces;
 using Alerto.Infrastructure.Authentication;
 using Alerto.Infrastructure.Caching;
@@ -22,6 +23,7 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
+        services.Configure<AlertOptions>(configuration.GetSection(AlertOptions.SectionName));
         services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.SectionName));
         services.Configure<BootstrapAdminOptions>(configuration.GetSection(BootstrapAdminOptions.SectionName));
         services.Configure<MachineClientOptions>(configuration.GetSection(MachineClientOptions.SectionName));

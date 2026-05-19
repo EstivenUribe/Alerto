@@ -1,13 +1,15 @@
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: alerto-postgres
+    container_name: Alerto_apiRest-postgres
     environment:
       POSTGRES_DB: alerto_db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
       - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d alerto_db"]
       interval: 10s
@@ -16,11 +18,17 @@ services:
 
   redis:
     image: redis:7-alpine
-    container_name: alerto-redis
+    container_name: Alerto_apiRest-redis
     ports:
       - "6379:6379"
+    volumes:
+      - redis_data:/data
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5
+
+volumes:
+  postgres_data:
+  redis_data:

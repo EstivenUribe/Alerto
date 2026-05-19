@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Alerto.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b53435f72e2946649f42e66dc5aaabbc7a356892")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9a1eb39ee10ddffc1f3a668f87938bc3a9f6c7b0")]
 [assembly: System.Reflection.AssemblyProductAttribute("Alerto.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Alerto.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

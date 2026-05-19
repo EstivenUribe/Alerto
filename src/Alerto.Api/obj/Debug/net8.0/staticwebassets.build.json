@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "pcd3tFnrLZkvJw7BnL4vfUVz3sPeGIZIMigCmraL9e0=",
+  "Hash": "ns+vKiEGa0TMnmAvBdnSv+0bTMt6lQhYJ0Mwvd+qrJo=",
   "Source": "Alerto.Api",
   "BasePath": "_content/Alerto.Api",
   "Mode": "Default",
@@ -17,7 +17,7 @@
   ],
   "Assets": [
     {
-      "Identity": "c:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Api\\wwwroot\\app.js",
+      "Identity": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Api\\wwwroot\\app.js",
       "SourceId": "Alerto.Api",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Api\\wwwroot\\",
@@ -36,7 +36,7 @@
       "OriginalItemSpec": "wwwroot\\app.js"
     },
     {
-      "Identity": "c:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Api\\wwwroot\\assets\\alerto-logo.png",
+      "Identity": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Api\\wwwroot\\assets\\alerto-logo.png",
       "SourceId": "Alerto.Api",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Api\\wwwroot\\",
@@ -55,7 +55,7 @@
       "OriginalItemSpec": "wwwroot\\assets\\alerto-logo.png"
     },
     {
-      "Identity": "c:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Api\\wwwroot\\assets\\facultad-ingenieria.png",
+      "Identity": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Api\\wwwroot\\assets\\facultad-ingenieria.png",
       "SourceId": "Alerto.Api",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Api\\wwwroot\\",
@@ -74,7 +74,7 @@
       "OriginalItemSpec": "wwwroot\\assets\\facultad-ingenieria.png"
     },
     {
-      "Identity": "c:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Api\\wwwroot\\index.html",
+      "Identity": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Api\\wwwroot\\index.html",
       "SourceId": "Alerto.Api",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Api\\wwwroot\\",
@@ -93,7 +93,7 @@
       "OriginalItemSpec": "wwwroot\\index.html"
     },
     {
-      "Identity": "c:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Api\\wwwroot\\styles.css",
+      "Identity": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Api\\wwwroot\\styles.css",
       "SourceId": "Alerto.Api",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Api\\wwwroot\\",

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Domain\\Alerto.Domain.csproj": {}
+    "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Domain\\Alerto.Domain.csproj": {}
   },
   "projects": {
-    "c:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Domain\\Alerto.Domain.csproj": {
+    "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Domain\\Alerto.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Domain\\Alerto.Domain.csproj",
+        "projectUniqueName": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Domain\\Alerto.Domain.csproj",
         "projectName": "Alerto.Domain",
-        "projectPath": "c:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Domain\\Alerto.Domain.csproj",
+        "projectPath": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Domain\\Alerto.Domain.csproj",
         "packagesPath": "C:\\Users\\cipap\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Domain\\obj\\",
+        "outputPath": "C:\\Users\\cipap\\Documents\\Alerto\\src\\Alerto.Domain\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\cipap\\AppData\\Roaming\\NuGet\\NuGet.Config"

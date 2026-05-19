@@ -82,6 +82,23 @@
             Este endpoint representa la salida hacia canales de notificacion o integraciones de difusion masiva.
             </remarks>
         </member>
+        <member name="M:Alerto.Api.Controllers.V1.AlertsController.CitizenConfirm(System.Guid,Alerto.Application.Alerts.CitizenConfirmAlertRequest,System.Threading.CancellationToken)">
+            <summary>
+            Registra la confirmacion ciudadana de que una alerta corresponde a una situacion real.
+            </summary>
+            <remarks>
+            Disponible para ciudadanos y operadores. Solo permite una confirmacion por usuario por alerta.
+            La alerta debe estar Aprobada o Difundida para poder confirmarse.
+            </remarks>
+        </member>
+        <member name="M:Alerto.Api.Controllers.V1.AlertsController.GetCitizenConfirmations(System.Guid,System.Threading.CancellationToken)">
+            <summary>
+            Devuelve la lista de confirmaciones ciudadanas de una alerta.
+            </summary>
+            <remarks>
+            Disponible para Admin, Operadores y Analistas. Permite ver quien confirmo la alerta en campo.
+            </remarks>
+        </member>
         <member name="M:Alerto.Api.Controllers.V1.AuthController.Login(Alerto.Application.Auth.LoginRequest,System.Threading.CancellationToken)">
             <summary>
             Autentica un usuario y devuelve una sesion JWT o un ticket temporal para 2FA.
@@ -177,27 +194,33 @@
             Inactiva un usuario para retirar acceso operacional sin borrado fisico del registro.
             </summary>
         </member>
-        <member name="M:Alerto.Api.Controllers.V1.WeatherController.GetDashboard(System.Decimal,System.Decimal,System.Threading.CancellationToken)">
+        <member name="M:Alerto.Api.Controllers.V1.WeatherController.GetDashboard(System.Decimal,System.Decimal,System.Boolean,System.Threading.CancellationToken)">
             <summary>
-            Obtiene el dashboard meteorológico actual para las coordenadas del usuario.
+            Obtiene el dashboard meteorologico actual para las coordenadas del usuario.
             </summary>
             <remarks>
             Consulta Open-Meteo para las coordenadas indicadas. Los datos se cachean 5 minutos.
-            Si el nivel de riesgo es Alto o Crítico, se crea automáticamente una alerta en el sistema.
+            Si el nivel de riesgo es Alto o Critico, se crea automaticamente una alerta en el sistema.
             </remarks>
             <param name="latitude">Latitud del usuario (entre -90 y 90).</param>
             <param name="longitude">Longitud del usuario (entre -180 y 180).</param>
-            <param name="cancellationToken">Token de cancelación.</param>
+            <param name="cancellationToken">Token de cancelacion.</param>
+        </member>
+        <member name="M:Alerto.Api.Controllers.V1.WeatherController.GetThresholdMode">
+            <summary>Obtiene el modo de umbrales de riesgo activo (Admin).</summary>
+        </member>
+        <member name="M:Alerto.Api.Controllers.V1.WeatherController.SetThresholdMode(Alerto.Api.Controllers.V1.WeatherController.SetThresholdModeRequest)">
+            <summary>Cambia el modo de umbrales de riesgo entre original y demo (Admin).</summary>
         </member>
         <member name="M:Alerto.Api.Controllers.V1.WeatherController.GetHistory(System.Decimal,System.Decimal,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Threading.CancellationToken)">
             <summary>
-            Consulta el historial de lecturas meteorológicas almacenadas para unas coordenadas.
+            Consulta el historial de lecturas meteorologicas almacenadas para unas coordenadas.
             </summary>
             <param name="latitude">Latitud de referencia.</param>
             <param name="longitude">Longitud de referencia.</param>
-            <param name="fromUtc">Inicio del rango (UTC). Por defecto: últimas 24 horas.</param>
+            <param name="fromUtc">Inicio del rango (UTC). Por defecto: ultimas 24 horas.</param>
             <param name="toUtc">Fin del rango (UTC). Por defecto: ahora.</param>
-            <param name="cancellationToken">Token de cancelación.</param>
+            <param name="cancellationToken">Token de cancelacion.</param>
         </member>
     </members>
 </doc>

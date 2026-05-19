@@ -15,6 +15,7 @@ public static class DependencyInjection
         services.AddAutoMapper(typeof(DependencyInjection).Assembly);
         services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
 
+        services.AddScoped<AlertServiceValidators>();
         services.AddScoped<IAlertService, AlertService>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IGeofenceService, GeofenceService>();

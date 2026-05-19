@@ -8,7 +8,6 @@ namespace Alerto.Domain.Entities;
 
 public sealed class Alert : BaseEntity
 {
-    private const int ApprovalTimeoutMinutes = 3;
     private readonly List<AlertDispatch> _dispatches = [];
     private readonly List<ApprovalRecord> _approvalRecords = [];
 
@@ -26,6 +25,7 @@ public sealed class Alert : BaseEntity
         decimal longitude,
         Guid geofenceId,
         Guid createdByUserId,
+        int approvalTimeoutMinutes,
         DateTime utcNow)
     {
         Title = title;
@@ -39,7 +39,7 @@ public sealed class Alert : BaseEntity
         GeofenceId = geofenceId;
         CreatedByUserId = createdByUserId;
         Status = AlertStatus.Pending;
-        ApprovalDeadlineUtc = utcNow.AddMinutes(ApprovalTimeoutMinutes);
+        ApprovalDeadlineUtc = utcNow.AddMinutes(approvalTimeoutMinutes);
         CreatedAtUtc = utcNow;
         UpdatedAtUtc = utcNow;
     }
@@ -82,7 +82,8 @@ public sealed class Alert : BaseEntity
         decimal longitude,
         Guid geofenceId,
         Guid createdByUserId,
-        DateTime utcNow)
+        DateTime utcNow,
+        int approvalTimeoutMinutes = 3)
     {
         var content = AlertContent.Create(title, description);
         var alert = new Alert(
@@ -95,6 +96,7 @@ public sealed class Alert : BaseEntity
             longitude,
             geofenceId,
             createdByUserId,
+            approvalTimeoutMinutes,
             utcNow);
 
         alert.RaiseDomainEvent(new AlertCreatedDomainEvent(alert.Id, createdByUserId, utcNow));

@@ -2,6 +2,17 @@ using FluentValidation;
 
 namespace Alerto.Application.Alerts;
 
+public sealed record AlertServiceValidators(
+    IValidator<CreateAlertRequest> Create,
+    IValidator<UpdateAlertRequest> Update,
+    IValidator<ApproveAlertRequest> Approve,
+    IValidator<RejectAlertRequest> Reject,
+    IValidator<CancelAlertRequest> Cancel,
+    IValidator<DeleteAlertRequest> Delete,
+    IValidator<DispatchAlertRequest> Dispatch,
+    IValidator<AlertQueryRequest> Query,
+    IValidator<CitizenConfirmAlertRequest> CitizenConfirm);
+
 public sealed class CreateAlertRequestValidator : AbstractValidator<CreateAlertRequest>
 {
     public CreateAlertRequestValidator()
